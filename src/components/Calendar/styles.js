@@ -6,7 +6,7 @@ export const Container = styled.div`
   color: ${({ theme }) => theme.colors.dark.dark};
   margin: 0 auto;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 
   header {
     display: flex;
@@ -27,12 +27,8 @@ export const Container = styled.div`
         height: 38px;
 
         color: ${({ theme }) => theme.colors.dark.lighter};
-        font-size: 1.9rem;
-        line-height: 38px;
-        text-align: center;
         margin: 0 1px;
         border-radius: 50%;
-        cursor: pointer;
 
         &:hover {
           background-color: ${({ theme }) => theme.colors.white.light};

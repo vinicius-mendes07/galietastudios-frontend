@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Container } from './styles';
 
+import chevronLeft from '../../assets/images/icons/chevron-left.svg';
+import chevronRight from '../../assets/images/icons/chevron-right.svg';
+
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState(new Date());
@@ -125,7 +128,7 @@ export default function Calendar() {
             className="material-symbols-rounded"
             onClick={handlePrevClick}
           >
-            chevron_left
+            <img src={chevronLeft} alt="chevron-left" />
           </button>
           <button
             type="button"
@@ -133,7 +136,7 @@ export default function Calendar() {
             className="material-symbols-rounded"
             onClick={handleNextClick}
           >
-            chevron_right
+            <img src={chevronRight} alt="chevron-right" />
           </button>
         </div>
       </header>

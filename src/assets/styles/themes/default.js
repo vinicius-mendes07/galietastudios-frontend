@@ -13,6 +13,19 @@ export default {
       light: '#F2F2F2',
       main: '#E7E7E7',
     },
+    gray: {
+      900: '#222222',
+      200: '#BCBCBC',
+      100: '#E5E5E5',
+    },
+    danger: {
+      light: '#F97171',
+      main: '#FC5050',
+      dark: '#F63131',
+    },
+    success: {
+      main: '#51CA73',
+    },
   },
 
   breakpoints: {

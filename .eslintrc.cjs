@@ -26,9 +26,11 @@ module.exports = {
     'react-hooks',
   ],
   rules: {
+    'react/require-default-props': 'off',
     'react/react-in-jsx-scope': 'off',
     'import/prefer-default-export': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/jsx-no-bind': 'off',
   },
 };
