@@ -34,14 +34,16 @@ export default function Calendar() {
         : '';
 
       const todayDate = new Date();
-      todayDate.setUTCHours(0, 0, 0, 0);
+      todayDate.setHours(0, 0, 0, 0);
 
       const dayDate = new Date(currentYear, currentMonth, i);
-      dayDate.setUTCHours(0, 0, 0, 0);
+      dayDate.setHours(0, 0, 0, 0);
+
+      const isSunday = dayDate.toLocaleString('pt-PT', { weekday: 'short' }).includes('domingo');
 
       const datePassed = dayDate.getTime() < todayDate.getTime();
 
-      const inactive = datePassed ? 'inactive' : '';
+      const inactive = datePassed || isSunday ? 'inactive' : '';
 
       if (isToday) {
         setSelectedDay({
