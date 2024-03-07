@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   max-width: 500px;
+  width: 100%;
   background-color: #fff;
   color: ${({ theme }) => theme.colors.dark.dark};
   margin: 0 auto;
@@ -59,7 +60,7 @@ export const Container = styled.div`
       margin-bottom: 20px;
 
       li {
-        margin-top: 30px;
+        margin-top: 16px;
         position: relative;
         z-index: 1;
 

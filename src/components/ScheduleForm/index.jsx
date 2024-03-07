@@ -1,17 +1,49 @@
 import { useState } from 'react';
+
+import {
+  Form,
+  FormContainer,
+  CalendarContainer,
+  HourContainer,
+  ButtonContainer,
+} from './styles';
 import useErrors from '../../hooks/useErrors';
+
 import formatPhoneBR from '../../utils/formatPhoneBR';
 import isEmailValid from '../../utils/isEmailValid';
+import Calendar from '../Calendar';
 import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
-import { Container } from './styles';
+import Hour from '../Hour';
+import Button from '../Button';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [serviceId, setServiceId] = useState('');
+
+  const hours = [
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+    '18:00',
+    '18:30',
+  ];
 
   const {
     setError,
@@ -56,47 +88,70 @@ export default function ScheduleForm() {
     }
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+  }
+
   return (
-    <Container>
-      <FormGroup error={getErrorMessageByField('name')}>
-        <Input
-          error={getErrorMessageByField('name')}
-          type="text"
-          placeholder="Nome *"
-          onChange={handleNameChange}
-          value={name}
-        />
-      </FormGroup>
-      <FormGroup error={getErrorMessageByField('phone')}>
-        <Input
-          error={getErrorMessageByField('phone')}
-          type="text"
-          placeholder="Telefone *"
-          onChange={handlePhoneChange}
-          value={phone}
-          maxLength="15"
-        />
-      </FormGroup>
-      <FormGroup error={getErrorMessageByField('email')}>
-        <Input
-          error={getErrorMessageByField('email')}
-          type="email"
-          placeholder="E-mail *"
-          onChange={handleEmailChange}
-          value={email}
-        />
-      </FormGroup>
-      <FormGroup error={getErrorMessageByField('serviceId')}>
-        <Select
-          error={getErrorMessageByField('serviceId')}
-          onChange={handleServiceIdChange}
-          value={serviceId}
-        >
-          <option value="">Serviço</option>
-          <option value="Barba">Barba</option>
-          <option value="Cabelo">Cabelo</option>
-        </Select>
-      </FormGroup>
-    </Container>
+    <Form onSubmit={handleSubmit}>
+      <FormContainer>
+        <FormGroup error={getErrorMessageByField('name')}>
+          <Input
+            error={getErrorMessageByField('name')}
+            type="text"
+            placeholder="Nome *"
+            onChange={handleNameChange}
+            value={name}
+          />
+        </FormGroup>
+        <FormGroup error={getErrorMessageByField('phone')}>
+          <Input
+            error={getErrorMessageByField('phone')}
+            type="text"
+            placeholder="Telefone *"
+            onChange={handlePhoneChange}
+            value={phone}
+            maxLength="15"
+          />
+        </FormGroup>
+        <FormGroup error={getErrorMessageByField('email')}>
+          <Input
+            error={getErrorMessageByField('email')}
+            type="email"
+            placeholder="E-mail *"
+            onChange={handleEmailChange}
+            value={email}
+          />
+        </FormGroup>
+        <FormGroup error={getErrorMessageByField('serviceId')}>
+          <Select
+            error={getErrorMessageByField('serviceId')}
+            onChange={handleServiceIdChange}
+            value={serviceId}
+          >
+            <option value="">Serviço</option>
+            <option value="Barba">Barba</option>
+            <option value="Cabelo">Cabelo</option>
+          </Select>
+        </FormGroup>
+      </FormContainer>
+
+      <CalendarContainer>
+        <Calendar />
+        <HourContainer>
+          {hours.map((hour) => <Hour hour={hour} />)}
+        </HourContainer>
+
+        <ButtonContainer>
+          <Button
+            type="submit"
+          >
+            Agendar
+          </Button>
+        </ButtonContainer>
+
+      </CalendarContainer>
+
+    </Form>
   );
 }
