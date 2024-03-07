@@ -1,14 +1,11 @@
-import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Container } from './styles';
 import logo from '../../assets/images/logo.svg';
 
-// trocar de a para Link
 // arrumar o href
-// adicionar classe de acordo com pathname para todos os links
 
 export default function Header() {
-  const { pathname } = useLocation();
   const [showMenu, setShowMenu] = useState('');
 
   function handleToggleMenu() {
@@ -17,29 +14,29 @@ export default function Header() {
 
   return (
     <Container>
-      <a href="/" className="logo logo-pc"><img src={logo} alt="logo" /></a>
+      <Link to="/" className="logo logo-pc"><img src={logo} alt="logo" /></Link>
 
       <nav>
         <ul>
           <div>
             <li>
-              <a href="/" className={pathname === '/' ? 'active' : ''}>Galeria</a>
+              <Link to="/">Galeria</Link>
             </li>
 
             <li>
-              <a href="/">Sobre nós</a>
+              <Link to="/">Sobre nós</Link>
             </li>
           </div>
 
-          <a href="/" className="logo logo-mobile"><img src={logo} alt="logo" /></a>
+          <Link to="/" className="logo logo-mobile"><img src={logo} alt="logo" /></Link>
 
           <div>
             <li>
-              <a href="/">Promoções</a>
+              <Link to="/">Promoções</Link>
             </li>
 
             <li>
-              <a href="/">Agendar</a>
+              <Link to="/schedule">Agendar</Link>
             </li>
           </div>
         </ul>

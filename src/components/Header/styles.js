@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.header`
-padding: 20px 0;
+  padding: 20px;
   .logo {
     img {
       display: block;

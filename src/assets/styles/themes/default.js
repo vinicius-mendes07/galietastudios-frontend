@@ -1,6 +1,5 @@
 export default {
   colors: {
-    background: '#202020',
     dark: {
       lighter: '#86868B',
       light: '#333333',
@@ -11,8 +10,8 @@ export default {
 
     white: {
       lighter: '#F5F5F7',
-      light: '#E7E7E7',
-      main: '#F2F2F2',
+      light: '#F2F2F2',
+      main: '#E7E7E7',
     },
   },
 
