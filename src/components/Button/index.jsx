@@ -4,10 +4,12 @@ import { StyledButton } from './styles';
 export default function Button({
   children,
   type = 'button',
+  disabled = false,
 }) {
   return (
     <StyledButton
       type={type}
+      disabled={disabled}
     >
       {children}
     </StyledButton>
@@ -17,4 +19,5 @@ export default function Button({
 Button.propTypes = {
   children: PropTypes.node.isRequired,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
 };

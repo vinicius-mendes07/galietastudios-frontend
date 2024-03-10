@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Container } from './styles';
 
 import chevronLeft from '../../assets/images/icons/chevron-left.svg';
 import chevronRight from '../../assets/images/icons/chevron-right.svg';
 
-export default function Calendar() {
+export default function Calendar({ selectedDate, setSelectedDate, setHour }) {
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [days, setDays] = useState([]);
   const [currentYear, setCurrentYear] = useState(date.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(date.getMonth());
-  const [selectedDay, setSelectedDay] = useState({});
 
   const renderCalendar = useCallback(() => {
     const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -48,8 +48,8 @@ export default function Calendar() {
 
       const inactive = datePassed || isSunday ? 'inactive' : '';
 
-      if (isToday) {
-        setSelectedDay({
+      if (isToday && !inactive) {
+        setSelectedDate({
           id: Math.random(),
           className: `${isToday} ${inactive}`,
           year: currentYear,
@@ -78,7 +78,7 @@ export default function Calendar() {
     }
 
     setCurrentDate(`${months[currentMonth]} ${currentYear}`);
-  }, [currentMonth, currentYear, date]);
+  }, [currentMonth, currentYear, date, setSelectedDate]);
 
   useEffect(() => {
     setDays([]);
@@ -88,6 +88,8 @@ export default function Calendar() {
 
   function handlePrevClick() {
     setCurrentMonth((prevState) => prevState - 1);
+    setSelectedDate({});
+    setHour('');
 
     if (currentMonth <= 0) {
       setDate(new Date(currentYear, currentMonth));
@@ -101,6 +103,8 @@ export default function Calendar() {
 
   function handleNextClick() {
     setCurrentMonth((prevState) => prevState + 1);
+    setSelectedDate({});
+    setHour('');
 
     if (currentMonth >= 11) {
       setDate(new Date(currentYear, currentMonth));
@@ -114,7 +118,8 @@ export default function Calendar() {
   }
 
   function handleSelectDay(day) {
-    setSelectedDay(day);
+    setSelectedDate(day);
+    setHour('');
   }
 
   return (
@@ -162,9 +167,9 @@ export default function Calendar() {
                 className={`
                 ${day.className}
                 ${
-                  (day.day === selectedDay.day
-                    && day.month === selectedDay.month
-                    && day.year === selectedDay.year
+                  (day.day === selectedDate.day
+                    && day.month === selectedDate.month
+                    && day.year === selectedDate.year
                     && !day.className.includes('inactive')) ? 'selected-day' : ''
                 }
                 `}
@@ -178,3 +183,15 @@ export default function Calendar() {
     </Container>
   );
 }
+
+Calendar.propTypes = {
+  selectedDate: PropTypes.shape({
+    id: PropTypes.number,
+    className: PropTypes.string,
+    year: PropTypes.number,
+    month: PropTypes.number,
+    day: PropTypes.string,
+  }).isRequired,
+  setSelectedDate: PropTypes.func.isRequired,
+  setHour: PropTypes.func.isRequired,
+};

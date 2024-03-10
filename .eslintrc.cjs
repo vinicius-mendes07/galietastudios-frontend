@@ -32,5 +32,7 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-no-bind': 'off',
+    'react/no-array-index-key': 'off',
+    'jsx-a11y/control-has-associated-label': 'off',
   },
 };

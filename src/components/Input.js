@@ -12,7 +12,7 @@ export const Input = styled.input`
   font-size: 16px;
   outline: none;
   transition: border-color .2s ease-in;
-  /* appearance: none; */
+  appearance: none;
 
   ${({ theme, error }) => error && css`
     color: ${theme.colors.danger.main};

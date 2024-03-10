@@ -13,7 +13,7 @@ export const Select = styled.select`
   border-radius: 4px;
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.04);
   transition: border-color .2s ease-in;
-  /* appearance: none; */
+  appearance: none;
 
   ${({ theme, error }) => error && css`
     color: ${theme.colors.danger.main};

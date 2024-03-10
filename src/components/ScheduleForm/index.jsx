@@ -6,6 +6,7 @@ import {
   CalendarContainer,
   HourContainer,
   ButtonContainer,
+  HourButton,
 } from './styles';
 import useErrors from '../../hooks/useErrors';
 
@@ -15,7 +16,6 @@ import Calendar from '../Calendar';
 import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
-import Hour from '../Hour';
 import Button from '../Button';
 
 export default function ScheduleForm() {
@@ -23,6 +23,8 @@ export default function ScheduleForm() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [serviceId, setServiceId] = useState('');
+  const [hour, setHour] = useState('');
+  const [selectedDate, setSelectedDate] = useState({});
 
   const hours = [
     '10:00',
@@ -46,10 +48,21 @@ export default function ScheduleForm() {
   ];
 
   const {
+    errors,
     setError,
     removeError,
     getErrorMessageByField,
   } = useErrors();
+
+  const isFormValid = (
+    name
+    && phone
+    && email
+    && serviceId
+    && Object.keys(selectedDate).length !== 0
+    && hour
+    && errors.length === 0
+  );
 
   function handleNameChange(event) {
     setName(event.target.value);
@@ -90,10 +103,19 @@ export default function ScheduleForm() {
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    console.log({
+      name,
+      phone,
+      email,
+      serviceId,
+      hour,
+      selectedDate,
+    });
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} noValidate>
       <FormContainer>
         <FormGroup error={getErrorMessageByField('name')}>
           <Input
@@ -137,14 +159,29 @@ export default function ScheduleForm() {
       </FormContainer>
 
       <CalendarContainer>
-        <Calendar />
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          setHour={setHour}
+        />
         <HourContainer>
-          {hours.map((hour) => <Hour hour={hour} />)}
+          {hours.map((hourAndMinute, index) => (
+            <HourButton
+              type="button"
+              key={index}
+              hour={hourAndMinute}
+              onClick={() => setHour(hourAndMinute)}
+              $selectedHour={hour === hourAndMinute}
+            >
+              {hourAndMinute}
+            </HourButton>
+          ))}
         </HourContainer>
 
         <ButtonContainer>
           <Button
             type="submit"
+            disabled={!isFormValid}
           >
             Agendar
           </Button>
