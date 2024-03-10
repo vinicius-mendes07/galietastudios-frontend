@@ -2,6 +2,11 @@ import styled from 'styled-components';
 
 export const Container = styled.header`
   padding: 20px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 3;
+
   .logo {
     img {
       display: block;
@@ -9,7 +14,7 @@ export const Container = styled.header`
     }
   }
 
-  .logo-pc {
+  .logo-mobile {
     display: none;
   }
 
@@ -41,66 +46,76 @@ export const Container = styled.header`
     }
   }
 
-  /*
-    .close-hamburguer {
-      display: none;
-    }
   .hamburguer {
     display: none;
-  } */
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    /*
+    nav {
+      ul {
+        div {
+          gap: 24px;
+        }
+        a {
+          font-size: 16px;
+        }
+
+      }
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+
+    .logo-pc {
+      display: none;
+    }
+
+    .logo-mobile {
+      display: block;
+      img {
+
+        width: 70px;
+      }
+    }
+
 
     nav {
-      position: fixed;
-      display: none;
-      text-align: center;
-
-      background-color: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      overflow: hidden;
+      top: 100%;
       left: 0;
-      top: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
-      height: 100%;
-
-      .close-hamburguer {
-        display: block;
-        width: 40%;
-        height: 100%;
-      }
+      height: 0;
+      border-top: 1px solid ${({ theme }) => theme.colors.white.main};
+      transition: 400ms ease 0s;
 
       ul {
+        display: flex;
         flex-direction: column;
-        background-color: #222;
-        width: 60%;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 24px;
         height: 100%;
+        gap: 24px;
+        background-color: #fff;
 
-        li {
+        div {
+          display: flex;
+          flex-direction: column;
+          gap: 24pxpx;
+          li {
 
-          a {
-             padding: 4px 8px;
-            border-bottom: 3px solid transparent;
-            transition: .3s ease-in-out;
-
-            &:hover {
-              border-bottom: 3px solid #bb9e6b;
+            a {
+              font-size: 40px;
             }
-          }
-
-          .active {
-             border-bottom: 3px solid #bb9e6b;
-            background-color: #bb9e6b;
-          }
-        }
-        .schedule-btn {
-          margin-left: 0px;
-          background: #bb9e6b;
-          border: 2px solid #bb9e6b;
-          padding: 12px 20px;
-
-          &:hover {
-            background-color: transparent;
-            color: #bb9e6b
           }
         }
       }
@@ -109,42 +124,46 @@ export const Container = styled.header`
     .hamburguer {
       display: flex;
       flex-direction: column;
-      width: 24px;
-      height: 21px;
-      gap: 6px;
+      background-color: transparent;
+      border: none;
 
       .line {
-        background-color: #fff;
-        width: 100%;
-        height: 3px;
+        background-color: ${({ theme }) => theme.colors.dark.dark};
+        width: 30px;
+        height: 2px;
         transition: .3s ease-in;
+        border-radius: 5px;
       }
 
       .line1 {
-
-      }
-
-      .line2 {
-
+        margin-top: 10px;
+        margin-bottom: 13px;
       }
 
       .line3 {
+        margin-bottom: 10px;
+      }
+    }
+    .show-menu ~ nav {
+      top: 100%;
+      height: 100vh;
+      z-index: 3;
+      overflow: hidden;
 
+      ul {
+        height: 100%;
+      }
+    }
+    .show-menu {
+
+      .line1 {
+        transform: translate3d(0px, 8px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(135deg) skew(0deg, 0deg);
+      }
+
+      .line3 {
+        transform: translate3d(0px, -7px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg, 0deg);
       }
     }
 
-    .show-menu {
-      .line1 {
-        transform-origin: 0% 0%;
-        transform: rotate(45deg) scaleX(1.1);
-      }
-      .line2 {
-        opacity: 0;
-      }
-      .line3 {
-        transform-origin: 0% 100%;
-        transform: rotate(-45deg) scaleX(1.1);
-      }
-    }*/
   }
 `;
