@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Form,
@@ -19,6 +19,7 @@ import { Select } from '../Select';
 import Button from '../Button';
 import getDateInUTCTimezone from '../../utils/getDateInUTCTimezone';
 import formatPhoneOnlyDigits from '../../utils/formatPhoneOnlyDigits';
+import ServiceService from '../../services/ServiceService';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -28,26 +29,7 @@ export default function ScheduleForm() {
   const [selectedHour, setSelectedHour] = useState('');
   const [selectedDate, setSelectedDate] = useState({});
 
-  const hours = [
-    '10:00',
-    '10:30',
-    '11:00',
-    '11:30',
-    '12:00',
-    '12:30',
-    '13:00',
-    '13:30',
-    '14:00',
-    '14:30',
-    '15:00',
-    '15:30',
-    '16:00',
-    '16:30',
-    '17:00',
-    '17:30',
-    '18:00',
-    '18:30',
-  ];
+  const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
 
   const {
     errors,
@@ -65,6 +47,20 @@ export default function ScheduleForm() {
     && selectedHour
     && errors.length === 0
   );
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const services = await ServiceService.listServices();
+
+        console.log(services);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    loadServices();
+  }, []);
 
   function handleNameChange(event) {
     setName(event.target.value);
