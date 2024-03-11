@@ -17,13 +17,15 @@ import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
 import Button from '../Button';
+import getDateInUTCTimezone from '../../utils/getDateInUTCTimezone';
+import formatPhoneOnlyDigits from '../../utils/formatPhoneOnlyDigits';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [serviceId, setServiceId] = useState('');
-  const [hour, setHour] = useState('');
+  const [selectedHour, setSelectedHour] = useState('');
   const [selectedDate, setSelectedDate] = useState({});
 
   const hours = [
@@ -60,7 +62,7 @@ export default function ScheduleForm() {
     && email
     && serviceId
     && Object.keys(selectedDate).length !== 0
-    && hour
+    && selectedHour
     && errors.length === 0
   );
 
@@ -104,13 +106,22 @@ export default function ScheduleForm() {
   function handleSubmit(event) {
     event.preventDefault();
 
+    const month = `${selectedDate.month + 1}`;
+    const twoDigitsMonth = month.padStart(2, '0');
+
+    const twoDigitsDay = selectedDate.day.padStart(2, '0');
+
+    const date = `${selectedDate.year}-${twoDigitsMonth}-${twoDigitsDay}`;
+
+    const { dateInUtc, hourInUtc } = getDateInUTCTimezone(date, selectedHour);
+
     console.log({
       name,
-      phone,
+      phone: formatPhoneOnlyDigits(phone),
       email,
+      schedule_date: dateInUtc,
+      hour: hourInUtc,
       serviceId,
-      hour,
-      selectedDate,
     });
   }
 
@@ -162,7 +173,7 @@ export default function ScheduleForm() {
         <Calendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          setHour={setHour}
+          setSelectedHour={setSelectedHour}
         />
         <HourContainer>
           {hours.map((hourAndMinute, index) => (
@@ -170,8 +181,8 @@ export default function ScheduleForm() {
               type="button"
               key={index}
               hour={hourAndMinute}
-              onClick={() => setHour(hourAndMinute)}
-              $selectedHour={hour === hourAndMinute}
+              onClick={() => setSelectedHour(hourAndMinute)}
+              $selectedHour={selectedHour === hourAndMinute}
             >
               {hourAndMinute}
             </HourButton>

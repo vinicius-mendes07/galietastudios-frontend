@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 32px;
+  padding: 24px;
   background-color: ${({ theme }) => theme.colors.white.main};
 
   h1 {

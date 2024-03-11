@@ -5,7 +5,7 @@ import { Container } from './styles';
 import chevronLeft from '../../assets/images/icons/chevron-left.svg';
 import chevronRight from '../../assets/images/icons/chevron-right.svg';
 
-export default function Calendar({ selectedDate, setSelectedDate, setHour }) {
+export default function Calendar({ selectedDate, setSelectedDate, setSelectedHour }) {
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [days, setDays] = useState([]);
@@ -89,7 +89,7 @@ export default function Calendar({ selectedDate, setSelectedDate, setHour }) {
   function handlePrevClick() {
     setCurrentMonth((prevState) => prevState - 1);
     setSelectedDate({});
-    setHour('');
+    setSelectedHour('');
 
     if (currentMonth <= 0) {
       setDate(new Date(currentYear, currentMonth));
@@ -104,7 +104,7 @@ export default function Calendar({ selectedDate, setSelectedDate, setHour }) {
   function handleNextClick() {
     setCurrentMonth((prevState) => prevState + 1);
     setSelectedDate({});
-    setHour('');
+    setSelectedHour('');
 
     if (currentMonth >= 11) {
       setDate(new Date(currentYear, currentMonth));
@@ -119,7 +119,7 @@ export default function Calendar({ selectedDate, setSelectedDate, setHour }) {
 
   function handleSelectDay(day) {
     setSelectedDate(day);
-    setHour('');
+    setSelectedHour('');
   }
 
   return (
@@ -193,5 +193,5 @@ Calendar.propTypes = {
     day: PropTypes.string,
   }).isRequired,
   setSelectedDate: PropTypes.func.isRequired,
-  setHour: PropTypes.func.isRequired,
+  setSelectedHour: PropTypes.func.isRequired,
 };
