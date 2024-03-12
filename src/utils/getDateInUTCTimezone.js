@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon';
+import { zoneFormat } from './zoneFormat';
 
 export default function getDateInUTCTimezone(date, hour) {
-  const portugalDateTime = DateTime.fromISO(`${date}T${hour}`, { zone: 'Brazil/West' }); // mudar para timezone de PT
+  const portugalDateTime = DateTime.fromISO(`${date}T${hour}`, { zone: zoneFormat }); // mudar para timezone de PT
 
   const UTCDateTime = portugalDateTime.toUTC();
 

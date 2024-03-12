@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DateTime } from 'luxon';
 
 import {
   Form,
@@ -10,16 +11,20 @@ import {
 } from './styles';
 import useErrors from '../../hooks/useErrors';
 
-import formatPhoneBR from '../../utils/formatPhoneBR';
-import isEmailValid from '../../utils/isEmailValid';
 import Calendar from '../Calendar';
 import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
 import Button from '../Button';
+
+import ServicesService from '../../services/ServicesService';
+import formatPhoneBR from '../../utils/formatPhoneBR';
+import isEmailValid from '../../utils/isEmailValid';
 import getDateInUTCTimezone from '../../utils/getDateInUTCTimezone';
 import formatPhoneOnlyDigits from '../../utils/formatPhoneOnlyDigits';
-import ServicesService from '../../services/ServicesService';
+import getCurrentDateAndHour from '../../utils/getCurrentDateAndHour';
+import { zoneFormat } from '../../utils/zoneFormat';
+import mountDate from '../../utils/mountDate';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -30,8 +35,30 @@ export default function ScheduleForm() {
   const [serviceId, setServiceId] = useState('');
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
+  // const [schedules, setSchedules] = useState([]);
+  // const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
+
+  const hoursAvailable = hours.filter((hourString) => {
+    const { currentDateAndHour } = getCurrentDateAndHour();
+
+    let hourAvaliable = false;
+
+    if (Object.keys(selectedDate).length !== 0) {
+      const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
+      const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
+
+      if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
+        hourAvaliable = hourString;
+      } else {
+        hourAvaliable = false;
+      }
+    } else {
+      hourAvaliable = false;
+    }
+    return hourAvaliable !== false;
+  });
 
   const {
     errors,
@@ -55,7 +82,6 @@ export default function ScheduleForm() {
       try {
         const servicesList = await ServicesService.listServices();
 
-        console.log(servicesList);
         setServices(servicesList);
       } catch (error) {
         console.log(error);
@@ -107,12 +133,7 @@ export default function ScheduleForm() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const month = `${selectedDate.month + 1}`;
-    const twoDigitsMonth = month.padStart(2, '0');
-
-    const twoDigitsDay = selectedDate.day.padStart(2, '0');
-
-    const date = `${selectedDate.year}-${twoDigitsMonth}-${twoDigitsDay}`;
+    const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
 
     const { dateInUtc, hourInUtc } = getDateInUTCTimezone(date, selectedHour);
 
@@ -183,7 +204,7 @@ export default function ScheduleForm() {
           setSelectedHour={setSelectedHour}
         />
         <HourContainer>
-          {hours.map((hourAndMinute, index) => (
+          {hoursAvailable.map((hourAndMinute, index) => (
             <HourButton
               type="button"
               key={index}

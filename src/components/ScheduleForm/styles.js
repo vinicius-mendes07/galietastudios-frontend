@@ -41,7 +41,7 @@ export const HourButton = styled.button`
   transition: background 0.2s ease-in;
   margin-right: auto;
   margin: 5px;
-
+  border: 2px solid transparent;
   &:hover {
     background-color: ${({ theme }) => theme.colors.dark.light};
   }
@@ -54,5 +54,6 @@ export const HourButton = styled.button`
   ${({ theme, $selectedHour }) => ($selectedHour && css`
     background-color: ${theme.colors.white.light} !important;
     color: ${theme.colors.dark.dark} !important;
+    border: 2px solid ${theme.colors.dark.lighter};
   `)}
 `;
