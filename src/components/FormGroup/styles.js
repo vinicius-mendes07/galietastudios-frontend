@@ -12,4 +12,14 @@ export const Container = styled.div`
     margin-top: 8px;
     font-weight: 500;
   }
+
+  .form-item {
+    position: relative;
+
+    .loader {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+    }
+  }
 `;

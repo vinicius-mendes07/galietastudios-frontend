@@ -19,15 +19,17 @@ import { Select } from '../Select';
 import Button from '../Button';
 import getDateInUTCTimezone from '../../utils/getDateInUTCTimezone';
 import formatPhoneOnlyDigits from '../../utils/formatPhoneOnlyDigits';
-import ServiceService from '../../services/ServiceService';
+import ServicesService from '../../services/ServicesService';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [serviceId, setServiceId] = useState('');
-  const [selectedHour, setSelectedHour] = useState('');
   const [selectedDate, setSelectedDate] = useState({});
+  const [selectedHour, setSelectedHour] = useState('');
+  const [serviceId, setServiceId] = useState('');
+  const [services, setServices] = useState([]);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
 
@@ -51,11 +53,14 @@ export default function ScheduleForm() {
   useEffect(() => {
     async function loadServices() {
       try {
-        const services = await ServiceService.listServices();
+        const servicesList = await ServicesService.listServices();
 
-        console.log(services);
+        console.log(servicesList);
+        setServices(servicesList);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoadingServices(false);
       }
     }
 
@@ -152,15 +157,21 @@ export default function ScheduleForm() {
             value={email}
           />
         </FormGroup>
-        <FormGroup error={getErrorMessageByField('serviceId')}>
+        <FormGroup
+          error={getErrorMessageByField('serviceId')}
+          isLoading={isLoadingServices}
+        >
           <Select
             error={getErrorMessageByField('serviceId')}
             onChange={handleServiceIdChange}
             value={serviceId}
+            disabled={isLoadingServices}
           >
-            <option value="">Serviço</option>
-            <option value="Barba">Barba</option>
-            <option value="Cabelo">Cabelo</option>
+            <option value="" disabled>Serviço</option>
+
+            {services.length > 0 && services.map((service) => (
+              <option key={service.id} value={service.id}>{service.service_type}</option>
+            ))}
           </Select>
         </FormGroup>
       </FormContainer>

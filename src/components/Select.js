@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 export const Select = styled.select`
   background-color: #fff;
   border: 2px solid #fff;
-  width: 200px;
   outline: none;
   height: 52px;
   width: 100%;
@@ -25,6 +24,12 @@ export const Select = styled.select`
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.gray[200]}
+    color: ${({ theme }) => theme.colors.gray[200]};
+  }
+
+  &[disabled] {
+    background-color: ${({ theme }) => theme.colors.gray[100]};
+    border-color: ${({ theme }) => theme.colors.gray[200]};
+    opacity: 1;
   }
 `;
