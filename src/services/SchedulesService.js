@@ -2,6 +2,13 @@ import delay from '../utils/delay';
 import api from './utils/api';
 
 class SchedulesService {
+  async listSchedules() {
+    await delay(2000);
+    const { data } = await api.get('/schedules');
+
+    return data;
+  }
+
   async createSchedule({
     name,
     phone,

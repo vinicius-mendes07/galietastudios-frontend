@@ -26,6 +26,7 @@ import getCurrentDateAndHour from '../../utils/getCurrentDateAndHour';
 import { zoneFormat } from '../../utils/zoneFormat';
 import mountDate from '../../utils/mountDate';
 import SchedulesService from '../../services/SchedulesService';
+import Loader from '../Loader';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -36,8 +37,9 @@ export default function ScheduleForm() {
   const [serviceId, setServiceId] = useState('');
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
-  // const [schedules, setSchedules] = useState([]);
-  // const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
+  const [schedules, setSchedules] = useState([]);
+  const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
+  const [scheduleError, setScheduleError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
@@ -80,6 +82,20 @@ export default function ScheduleForm() {
   );
 
   useEffect(() => {
+    async function loadSchedules() {
+      try {
+        const schedulesList = await SchedulesService.listSchedules();
+
+        setSchedules(schedulesList);
+        console.log(schedulesList);
+      } catch (error) {
+        console.log(error);
+        setScheduleError(true);
+      } finally {
+        setIsLoadingSchedules(false);
+      }
+    }
+
     async function loadServices() {
       try {
         const servicesList = await ServicesService.listServices();
@@ -92,6 +108,7 @@ export default function ScheduleForm() {
       }
     }
 
+    loadSchedules();
     loadServices();
   }, []);
 
@@ -158,93 +175,96 @@ export default function ScheduleForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit} noValidate>
-      <FormContainer>
-        <FormGroup error={getErrorMessageByField('name')}>
-          <Input
-            error={getErrorMessageByField('name')}
-            type="text"
-            placeholder="Nome *"
-            onChange={handleNameChange}
-            value={name}
-            disabled={isSubmitting}
-          />
-        </FormGroup>
-        <FormGroup error={getErrorMessageByField('phone')}>
-          <Input
-            error={getErrorMessageByField('phone')}
-            type="text"
-            placeholder="Telefone *"
-            onChange={handlePhoneChange}
-            value={phone}
-            maxLength="15"
-            disabled={isSubmitting}
-          />
-        </FormGroup>
-        <FormGroup error={getErrorMessageByField('email')}>
-          <Input
-            error={getErrorMessageByField('email')}
-            type="email"
-            placeholder="E-mail *"
-            onChange={handleEmailChange}
-            value={email}
-            disabled={isSubmitting}
-          />
-        </FormGroup>
-        <FormGroup
-          error={getErrorMessageByField('serviceId')}
-          isLoading={isLoadingServices}
-        >
-          <Select
-            error={getErrorMessageByField('serviceId')}
-            onChange={handleServiceIdChange}
-            value={serviceId}
-            disabled={isLoadingServices || isSubmitting}
-          >
-            <option value="" disabled>Serviço</option>
-            <option value="321">teste</option>
-
-            {services.length > 0 && services.map((service) => (
-              <option key={service.id} value={service.id}>{service.service_type}</option>
-            ))}
-          </Select>
-        </FormGroup>
-      </FormContainer>
-
-      <CalendarContainer>
-        <Calendar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          setSelectedHour={setSelectedHour}
-          isSubmitting={isSubmitting}
-        />
-        <HourContainer>
-          {hoursAvailable.map((hourAndMinute, index) => (
-            <HourButton
-              type="button"
-              key={index}
-              hour={hourAndMinute}
-              onClick={() => setSelectedHour(hourAndMinute)}
-              $selectedHour={selectedHour === hourAndMinute}
+    <>
+      <Loader isLoading={isLoadingSchedules} />
+      <Form onSubmit={handleSubmit} noValidate>
+        <FormContainer>
+          <FormGroup error={getErrorMessageByField('name')}>
+            <Input
+              error={getErrorMessageByField('name')}
+              type="text"
+              placeholder="Nome *"
+              onChange={handleNameChange}
+              value={name}
               disabled={isSubmitting}
-            >
-              {hourAndMinute}
-            </HourButton>
-          ))}
-        </HourContainer>
-
-        <ButtonContainer>
-          <Button
-            type="submit"
-            disabled={!isFormValid}
-            isLoading={isSubmitting}
+            />
+          </FormGroup>
+          <FormGroup error={getErrorMessageByField('phone')}>
+            <Input
+              error={getErrorMessageByField('phone')}
+              type="text"
+              placeholder="Telefone *"
+              onChange={handlePhoneChange}
+              value={phone}
+              maxLength="15"
+              disabled={isSubmitting}
+            />
+          </FormGroup>
+          <FormGroup error={getErrorMessageByField('email')}>
+            <Input
+              error={getErrorMessageByField('email')}
+              type="email"
+              placeholder="E-mail *"
+              onChange={handleEmailChange}
+              value={email}
+              disabled={isSubmitting}
+            />
+          </FormGroup>
+          <FormGroup
+            error={getErrorMessageByField('serviceId')}
+            isLoading={isLoadingServices}
           >
-            Agendar
-          </Button>
-        </ButtonContainer>
+            <Select
+              error={getErrorMessageByField('serviceId')}
+              onChange={handleServiceIdChange}
+              value={serviceId}
+              disabled={isLoadingServices || isSubmitting}
+            >
+              <option value="" disabled>Serviço</option>
+              <option value="321">teste</option>
 
-      </CalendarContainer>
+              {services.length > 0 && services.map((service) => (
+                <option key={service.id} value={service.id}>{service.service_type}</option>
+              ))}
+            </Select>
+          </FormGroup>
+        </FormContainer>
 
-    </Form>
+        <CalendarContainer>
+          <Calendar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            setSelectedHour={setSelectedHour}
+            isSubmitting={isSubmitting}
+          />
+          <HourContainer>
+            {hoursAvailable.map((hourAndMinute, index) => (
+              <HourButton
+                type="button"
+                key={index}
+                hour={hourAndMinute}
+                onClick={() => setSelectedHour(hourAndMinute)}
+                $selectedHour={selectedHour === hourAndMinute}
+                disabled={isSubmitting}
+              >
+                {hourAndMinute}
+              </HourButton>
+            ))}
+          </HourContainer>
+
+          <ButtonContainer>
+            <Button
+              type="submit"
+              disabled={!isFormValid}
+              isLoading={isSubmitting}
+            >
+              Agendar
+            </Button>
+          </ButtonContainer>
+
+        </CalendarContainer>
+
+      </Form>
+    </>
   );
 }
