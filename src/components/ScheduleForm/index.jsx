@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DateTime } from 'luxon';
 
 import {
@@ -8,7 +8,10 @@ import {
   HourContainer,
   ButtonContainer,
   HourButton,
+  EmptyList,
+  ErrorContainer,
 } from './styles';
+
 import useErrors from '../../hooks/useErrors';
 
 import Calendar from '../Calendar';
@@ -16,6 +19,9 @@ import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
 import Button from '../Button';
+
+import emptyBox from '../../assets/images/empty-box.svg';
+import sad from '../../assets/images/sad.svg';
 
 import ServicesService from '../../services/ServicesService';
 import formatPhoneBR from '../../utils/formatPhoneBR';
@@ -38,25 +44,34 @@ export default function ScheduleForm() {
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [schedules, setSchedules] = useState([]);
+  const [canceledDays, setCanceledDays] = useState([]);
   const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
-  const [scheduleError, setScheduleError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
+
+  const hasSelectedDate = Object.keys(selectedDate).length !== 0;
 
   const hoursAvailable = hours.filter((hourString) => {
     const { currentDateAndHour } = getCurrentDateAndHour();
 
     let hourAvaliable = false;
 
-    if (Object.keys(selectedDate).length !== 0) {
+    if (hasSelectedDate) {
       const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
-      const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
 
-      if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
-        hourAvaliable = hourString;
-      } else {
+      const isDayCanceled = canceledDays.find((canceledDay) => canceledDay.schedule_date === date);
+      if (isDayCanceled) {
         hourAvaliable = false;
+      } else {
+        const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
+
+        if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
+          hourAvaliable = hourString;
+        } else {
+          hourAvaliable = false;
+        }
       }
     } else {
       hourAvaliable = false;
@@ -76,26 +91,35 @@ export default function ScheduleForm() {
     && phone
     && email
     && serviceId
-    && Object.keys(selectedDate).length !== 0
+    && hasSelectedDate
     && selectedHour
     && errors.length === 0
   );
 
-  useEffect(() => {
-    async function loadSchedules() {
-      try {
-        const schedulesList = await SchedulesService.listSchedules();
-
+  const loadSchedules = useCallback(async () => {
+    try {
+      setIsLoadingSchedules(true);
+      if (hasSelectedDate) {
+        const dateMounted = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
+        const [schedulesList, canceledDaysList] = await Promise.all([
+          SchedulesService.listSchedules(dateMounted),
+          SchedulesService.listCanceledDays(),
+        ]);
         setSchedules(schedulesList);
-        console.log(schedulesList);
-      } catch (error) {
-        console.log(error);
-        setScheduleError(true);
-      } finally {
-        setIsLoadingSchedules(false);
-      }
-    }
 
+        setCanceledDays(canceledDaysList);
+        setHasError(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setHasError(true);
+      setSchedules([]);
+    } finally {
+      setIsLoadingSchedules(false);
+    }
+  }, [hasSelectedDate, selectedDate]);
+
+  useEffect(() => {
     async function loadServices() {
       try {
         const servicesList = await ServicesService.listServices();
@@ -110,7 +134,11 @@ export default function ScheduleForm() {
 
     loadSchedules();
     loadServices();
-  }, []);
+  }, [loadSchedules]);
+
+  function handleTryAgain() {
+    loadSchedules();
+  }
 
   function handleNameChange(event) {
     setName(event.target.value);
@@ -173,6 +201,9 @@ export default function ScheduleForm() {
       setIsSubmitting(false);
     }
   }
+
+  const hasHoursAvailable = hoursAvailable.length > 0;
+  const isListEmpty = !hasHoursAvailable && !hasError && !isLoadingSchedules;
 
   return (
     <>
@@ -238,18 +269,42 @@ export default function ScheduleForm() {
             isSubmitting={isSubmitting}
           />
           <HourContainer>
-            {hoursAvailable.map((hourAndMinute, index) => (
-              <HourButton
-                type="button"
-                key={index}
-                hour={hourAndMinute}
-                onClick={() => setSelectedHour(hourAndMinute)}
-                $selectedHour={selectedHour === hourAndMinute}
-                disabled={isSubmitting}
-              >
-                {hourAndMinute}
-              </HourButton>
-            ))}
+            {(hasHoursAvailable && !hasError) && (
+              hoursAvailable.map((hourAndMinute, index) => (
+                <HourButton
+                  type="button"
+                  key={index}
+                  hour={hourAndMinute}
+                  onClick={() => setSelectedHour(hourAndMinute)}
+                  $selectedHour={selectedHour === hourAndMinute}
+                  disabled={isSubmitting}
+                >
+                  {hourAndMinute}
+                </HourButton>
+              ))
+            )}
+
+            {isListEmpty && (
+              <EmptyList>
+                <img src={emptyBox} alt="empty box" />
+                <p>Nenhum horário disponivel para esta data</p>
+              </EmptyList>
+            )}
+
+            {hasError && (
+              <ErrorContainer>
+                <img src={sad} alt="sad" />
+                <div className="details">
+                  <strong>Ocorreu um erro ao obter os horários disponíveis!</strong>
+                  <Button
+                    type="button"
+                    onClick={handleTryAgain}
+                  >
+                    Tentar novamente
+                  </Button>
+                </div>
+              </ErrorContainer>
+            )}
           </HourContainer>
 
           <ButtonContainer>

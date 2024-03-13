@@ -2,10 +2,19 @@ import delay from '../utils/delay';
 import api from './utils/api';
 
 class SchedulesService {
-  async listSchedules() {
+  async listSchedules(date = '') {
     await delay(2000);
+    if (date) {
+      const { data } = await api.get(`/schedules?date=${date}`);
+      return data;
+    }
     const { data } = await api.get('/schedules');
+    return data;
+  }
 
+  async listCanceledDays() {
+    await delay(2000);
+    const { data } = await api.get('/schedules/canceled');
     return data;
   }
 
