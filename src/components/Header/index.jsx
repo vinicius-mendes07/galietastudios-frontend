@@ -12,12 +12,16 @@ export default function Header() {
     setShowMenu((prevState) => (prevState === '' ? 'show-menu' : ''));
   }
 
+  function closeMenu() {
+    setShowMenu('');
+  }
+
   return (
     <Container>
       <Link
         to="/"
         className="logo logo-mobile"
-        onClick={handleToggleMenu}
+        onClick={closeMenu}
       >
         <img src={logo} alt="logo" />
       </Link>
@@ -32,7 +36,7 @@ export default function Header() {
             <li>
               <Link
                 to="/"
-                onClick={handleToggleMenu}
+                onClick={closeMenu}
               >
                 Galeria
               </Link>
@@ -41,7 +45,7 @@ export default function Header() {
             <li>
               <Link
                 to="/"
-                onClick={handleToggleMenu}
+                onClick={closeMenu}
               >
                 Sobre nós
               </Link>
@@ -51,7 +55,7 @@ export default function Header() {
           <Link
             to="/"
             className="logo logo-pc"
-            onClick={handleToggleMenu}
+            onClick={closeMenu}
           >
             <img src={logo} alt="logo" />
 
@@ -61,7 +65,7 @@ export default function Header() {
             <li>
               <Link
                 to="/"
-                onClick={handleToggleMenu}
+                onClick={closeMenu}
               >
                 Promoções
               </Link>
@@ -70,7 +74,7 @@ export default function Header() {
             <li>
               <Link
                 to="/schedule"
-                onClick={handleToggleMenu}
+                onClick={closeMenu}
               >
                 Agendar
               </Link>
