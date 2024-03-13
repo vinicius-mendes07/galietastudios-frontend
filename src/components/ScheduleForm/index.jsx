@@ -25,6 +25,7 @@ import formatPhoneOnlyDigits from '../../utils/formatPhoneOnlyDigits';
 import getCurrentDateAndHour from '../../utils/getCurrentDateAndHour';
 import { zoneFormat } from '../../utils/zoneFormat';
 import mountDate from '../../utils/mountDate';
+import SchedulesService from '../../services/SchedulesService';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -37,6 +38,7 @@ export default function ScheduleForm() {
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   // const [schedules, setSchedules] = useState([]);
   // const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
 
@@ -130,21 +132,29 @@ export default function ScheduleForm() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
+    try {
+      setIsSubmitting(true);
+      const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
+      const { dateInUtc, hourInUtc } = getDateInUTCTimezone(date, selectedHour);
 
-    const { dateInUtc, hourInUtc } = getDateInUTCTimezone(date, selectedHour);
+      const schedule = await SchedulesService.createSchedule({
+        name,
+        phone: formatPhoneOnlyDigits(phone),
+        email,
+        schedule_date: dateInUtc,
+        hour: hourInUtc,
+        service_id: serviceId,
+      });
 
-    console.log({
-      name,
-      phone: formatPhoneOnlyDigits(phone),
-      email,
-      schedule_date: dateInUtc,
-      hour: hourInUtc,
-      serviceId,
-    });
+      console.log(schedule);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -157,6 +167,7 @@ export default function ScheduleForm() {
             placeholder="Nome *"
             onChange={handleNameChange}
             value={name}
+            disabled={isSubmitting}
           />
         </FormGroup>
         <FormGroup error={getErrorMessageByField('phone')}>
@@ -167,6 +178,7 @@ export default function ScheduleForm() {
             onChange={handlePhoneChange}
             value={phone}
             maxLength="15"
+            disabled={isSubmitting}
           />
         </FormGroup>
         <FormGroup error={getErrorMessageByField('email')}>
@@ -176,6 +188,7 @@ export default function ScheduleForm() {
             placeholder="E-mail *"
             onChange={handleEmailChange}
             value={email}
+            disabled={isSubmitting}
           />
         </FormGroup>
         <FormGroup
@@ -186,9 +199,10 @@ export default function ScheduleForm() {
             error={getErrorMessageByField('serviceId')}
             onChange={handleServiceIdChange}
             value={serviceId}
-            disabled={isLoadingServices}
+            disabled={isLoadingServices || isSubmitting}
           >
             <option value="" disabled>Serviço</option>
+            <option value="321">teste</option>
 
             {services.length > 0 && services.map((service) => (
               <option key={service.id} value={service.id}>{service.service_type}</option>
@@ -202,6 +216,7 @@ export default function ScheduleForm() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setSelectedHour={setSelectedHour}
+          isSubmitting={isSubmitting}
         />
         <HourContainer>
           {hoursAvailable.map((hourAndMinute, index) => (
@@ -211,6 +226,7 @@ export default function ScheduleForm() {
               hour={hourAndMinute}
               onClick={() => setSelectedHour(hourAndMinute)}
               $selectedHour={selectedHour === hourAndMinute}
+              disabled={isSubmitting}
             >
               {hourAndMinute}
             </HourButton>
@@ -221,6 +237,7 @@ export default function ScheduleForm() {
           <Button
             type="submit"
             disabled={!isFormValid}
+            isLoading={isSubmitting}
           >
             Agendar
           </Button>

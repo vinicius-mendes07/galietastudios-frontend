@@ -5,7 +5,12 @@ import { Container } from './styles';
 import chevronLeft from '../../assets/images/icons/chevron-left.svg';
 import chevronRight from '../../assets/images/icons/chevron-right.svg';
 
-export default function Calendar({ selectedDate, setSelectedDate, setSelectedHour }) {
+export default function Calendar({
+  selectedDate,
+  setSelectedDate,
+  setSelectedHour,
+  isSubmitting = false,
+}) {
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [days, setDays] = useState([]);
@@ -130,16 +135,16 @@ export default function Calendar({ selectedDate, setSelectedDate, setSelectedHou
           <button
             type="button"
             id="prev"
-            className="material-symbols-rounded"
             onClick={handlePrevClick}
+            disabled={isSubmitting}
           >
             <img src={chevronLeft} alt="chevron-left" />
           </button>
           <button
             type="button"
             id="next"
-            className="material-symbols-rounded"
             onClick={handleNextClick}
+            disabled={isSubmitting}
           >
             <img src={chevronRight} alt="chevron-right" />
           </button>
@@ -163,7 +168,7 @@ export default function Calendar({ selectedDate, setSelectedDate, setSelectedHou
               <button
                 type="button"
                 onClick={() => handleSelectDay(day)}
-                disabled={day.className.includes('inactive')}
+                disabled={day.className.includes('inactive') || isSubmitting}
                 className={`
                 ${day.className}
                 ${
@@ -194,4 +199,5 @@ Calendar.propTypes = {
   }).isRequired,
   setSelectedDate: PropTypes.func.isRequired,
   setSelectedHour: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool,
 };

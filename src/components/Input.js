@@ -26,4 +26,9 @@ export const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray[200]}
   }
+
+  &[disabled] {
+    background-color: ${({ theme }) => theme.colors.gray[100]};
+    border-color: ${({ theme }) => theme.colors.gray[200]};
+  }
 `;

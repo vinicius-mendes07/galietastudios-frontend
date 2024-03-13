@@ -56,4 +56,9 @@ export const HourButton = styled.button`
     color: ${theme.colors.dark.dark} !important;
     border: 2px solid ${theme.colors.dark.lighter};
   `)}
+
+  &[disabled] {
+    cursor: default;
+    opacity: 0.5;
+  }
 `;

@@ -13,6 +13,7 @@ export const StyledButton = styled.button`
   justify-content: center;
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.04);
   font-weight: bold;
+  transition: background 0.2s ease-in;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.dark.light};

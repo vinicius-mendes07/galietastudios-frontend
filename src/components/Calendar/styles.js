@@ -38,6 +38,11 @@ export const Container = styled.div`
         &:last-child {
           margin-right: -10px;
         }
+
+        &[disabled] {
+          cursor: default;
+          opacity: 0.5;
+        }
       }
     }
   }
