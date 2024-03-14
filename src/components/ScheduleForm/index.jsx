@@ -34,6 +34,7 @@ import { zoneFormat } from '../../utils/zoneFormat';
 import mountDate from '../../utils/mountDate';
 import SchedulesService from '../../services/SchedulesService';
 import Loader from '../Loader';
+import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -69,7 +70,25 @@ export default function ScheduleForm() {
         const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
 
         if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
-          hourAvaliable = hourString;
+          const hasSchedule = schedules.find((schedule) => {
+            const scheduleStart = getDateInPortugalTimezone(schedule.schedule_date, schedule.hour);
+            const scheduleEnd = getDateInPortugalTimezone(
+              schedule.schedule_date,
+              schedule.hour_end,
+            );
+
+            if (dateSelected.toMillis() >= scheduleStart.toMillis()
+            && dateSelected.toMillis() < scheduleEnd.toMillis()) {
+              return true;
+            }
+            return false;
+          });
+
+          if (hasSchedule) {
+            hourAvaliable = false;
+          } else {
+            hourAvaliable = hourString;
+          }
         } else {
           hourAvaliable = false;
         }
@@ -196,6 +215,11 @@ export default function ScheduleForm() {
       });
 
       console.log(schedule);
+      setName('');
+      setPhone('');
+      setEmail('');
+      setSelectedHour('');
+      setServiceId('');
     } catch (error) {
       console.log(error);
     } finally {
