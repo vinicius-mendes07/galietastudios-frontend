@@ -10,6 +10,7 @@ import {
   HourButton,
   EmptyList,
   ErrorContainer,
+  DateNotSelected,
 } from './styles';
 
 import useErrors from '../../hooks/useErrors';
@@ -203,7 +204,8 @@ export default function ScheduleForm() {
   }
 
   const hasHoursAvailable = hoursAvailable.length > 0;
-  const isListEmpty = !hasHoursAvailable && !hasError && !isLoadingSchedules;
+  const isListEmpty = (!hasHoursAvailable && !hasError && hasSelectedDate)
+   || (isLoadingSchedules && !hasError);
 
   return (
     <>
@@ -267,9 +269,10 @@ export default function ScheduleForm() {
             setSelectedDate={setSelectedDate}
             setSelectedHour={setSelectedHour}
             isSubmitting={isSubmitting}
+            setHasError={setHasError}
           />
           <HourContainer>
-            {(hasHoursAvailable && !hasError) && (
+            {(hasHoursAvailable && !hasError && !isLoadingSchedules) && (
               hoursAvailable.map((hourAndMinute, index) => (
                 <HourButton
                   type="button"
@@ -304,6 +307,12 @@ export default function ScheduleForm() {
                   </Button>
                 </div>
               </ErrorContainer>
+            )}
+            {(!hasSelectedDate && !hasError) && (
+              <DateNotSelected>
+                <p>Nenhuma data selecionada.</p>
+                <p>Selecione um dia no calendário acima.</p>
+              </DateNotSelected>
             )}
           </HourContainer>
 

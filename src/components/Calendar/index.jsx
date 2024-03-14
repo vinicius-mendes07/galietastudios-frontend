@@ -9,6 +9,7 @@ export default function Calendar({
   selectedDate,
   setSelectedDate,
   setSelectedHour,
+  setHasError,
   isSubmitting = false,
 }) {
   const [currentDate, setCurrentDate] = useState('');
@@ -95,6 +96,7 @@ export default function Calendar({
     setCurrentMonth((prevState) => prevState - 1);
     setSelectedDate({});
     setSelectedHour('');
+    setHasError(false);
 
     if (currentMonth <= 0) {
       setDate(new Date(currentYear, currentMonth));
@@ -110,6 +112,7 @@ export default function Calendar({
     setCurrentMonth((prevState) => prevState + 1);
     setSelectedDate({});
     setSelectedHour('');
+    setHasError(false);
 
     if (currentMonth >= 11) {
       setDate(new Date(currentYear, currentMonth));
@@ -199,5 +202,6 @@ Calendar.propTypes = {
   }).isRequired,
   setSelectedDate: PropTypes.func.isRequired,
   setSelectedHour: PropTypes.func.isRequired,
+  setHasError: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
 };

@@ -92,3 +92,10 @@ export const ErrorContainer = styled.div`
     }
   }
 `;
+
+export const DateNotSelected = styled.div`
+  p {
+    font-weight: bold;
+    text-align: center;
+  }
+`;
