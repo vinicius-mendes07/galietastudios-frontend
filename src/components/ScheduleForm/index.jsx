@@ -36,6 +36,7 @@ import SchedulesService from '../../services/SchedulesService';
 import Loader from '../Loader';
 import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
 import toast from '../../utils/toast';
+import getHourOnly from '../../utils/getHourOnly';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -206,6 +207,43 @@ export default function ScheduleForm() {
       const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
       const { dateInUtc, hourInUtc } = getDateInUTCTimezone(date, selectedHour);
 
+      const dateSelectedStart = DateTime.fromISO(`${date}T${selectedHour}`, { zone: zoneFormat });
+
+      const selectedService = services.find((service) => service.id === serviceId);
+
+      const dateSelectedEnd = dateSelectedStart.plus({ minutes: selectedService.duration });
+
+      const isDateEndInBetweenScheduleDate = schedules.find((schedule) => {
+        let dateIsInBetweenScheduleDate = false;
+        const scheduleDateStart = getDateInPortugalTimezone(schedule.schedule_date, schedule.hour);
+
+        const scheduleDateEnd = getDateInPortugalTimezone(
+          schedule.schedule_date,
+          schedule.hour_end,
+        );
+
+        if (dateSelectedEnd.toMillis() > scheduleDateStart.toMillis()
+        && dateSelectedEnd.toMillis() <= scheduleDateEnd.toMillis()) {
+          dateIsInBetweenScheduleDate = true;
+        }
+        return dateIsInBetweenScheduleDate;
+      });
+
+      if (isDateEndInBetweenScheduleDate) {
+        const dateInBetween = getDateInPortugalTimezone(
+          isDateEndInBetweenScheduleDate.schedule_date,
+          isDateEndInBetweenScheduleDate.hour,
+        );
+
+        const hourOnly = getHourOnly(dateInBetween);
+        toast({
+          type: 'danger',
+          text: `O horário escolhido parece não ter tempo suficente para o serviço, há um agendamento às ${hourOnly}, tente escolher outro!`,
+        });
+
+        return;
+      }
+
       const schedule = await SchedulesService.createSchedule({
         name,
         phone: formatPhoneOnlyDigits(phone),
@@ -291,7 +329,9 @@ export default function ScheduleForm() {
               <option value="321">teste</option>
 
               {services.length > 0 && services.map((service) => (
-                <option key={service.id} value={service.id}>{service.service_type}</option>
+                <option key={service.id} value={service.id}>
+                  {service.service_type} - {service.duration} min
+                </option>
               ))}
             </Select>
           </FormGroup>
