@@ -35,6 +35,7 @@ import mountDate from '../../utils/mountDate';
 import SchedulesService from '../../services/SchedulesService';
 import Loader from '../Loader';
 import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
+import toast from '../../utils/toast';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -220,8 +221,17 @@ export default function ScheduleForm() {
       setEmail('');
       setSelectedHour('');
       setServiceId('');
+
+      toast({
+        type: 'success',
+        text: 'Solicitação de agendamento efetuada com sucesso!',
+      });
     } catch (error) {
       console.log(error);
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao solicitar agendamento!',
+      });
     } finally {
       setIsSubmitting(false);
     }
