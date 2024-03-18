@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
 import {
@@ -52,6 +53,8 @@ export default function ScheduleForm() {
   const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate();
 
   const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
 
@@ -244,7 +247,7 @@ export default function ScheduleForm() {
         return;
       }
 
-      const schedule = await SchedulesService.createSchedule({
+      await SchedulesService.createSchedule({
         name,
         phone: formatPhoneOnlyDigits(phone),
         email,
@@ -253,7 +256,6 @@ export default function ScheduleForm() {
         service_id: serviceId,
       });
 
-      console.log(schedule);
       setName('');
       setPhone('');
       setEmail('');
@@ -264,6 +266,8 @@ export default function ScheduleForm() {
         type: 'success',
         text: 'Solicitação de agendamento efetuada com sucesso!',
       });
+
+      navigate('/schedule/success', { replace: true });
     } catch (error) {
       console.log(error);
       toast({
