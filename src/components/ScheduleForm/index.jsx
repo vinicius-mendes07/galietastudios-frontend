@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
@@ -48,15 +50,16 @@ export default function ScheduleForm() {
   const [serviceId, setServiceId] = useState('');
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
-  const [schedules, setSchedules] = useState([]);
-  const [canceledDays, setCanceledDays] = useState([]);
+  // const [schedules, setSchedules] = useState([]);
+  // const [canceledDays, setCanceledDays] = useState([]);
   const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [schedulesAndCanceledDays, setSchedulesAndCanceledDays] = useState([]);
 
   const navigate = useNavigate();
 
-  const hours = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
+  const hours = useMemo(() => ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'], []);
 
   const hasSelectedDate = Object.keys(selectedDate).length !== 0;
 
@@ -68,41 +71,44 @@ export default function ScheduleForm() {
     if (hasSelectedDate) {
       const date = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
 
-      const isDayCanceled = canceledDays.find((canceledDay) => canceledDay.schedule_date === date);
+      const isDayCanceled = schedulesAndCanceledDays.find(
+        (schedule) => (schedule.schedule_date === date && !schedule.available),
+      );
       if (isDayCanceled) {
-        hourAvaliable = false;
-      } else {
-        const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
+        return false;
+      }
+      const dateSelected = DateTime.fromISO(`${date}T${hourString}`, { zone: zoneFormat });
 
-        if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
-          const hasSchedule = schedules.find((schedule) => {
-            const scheduleStart = getDateInPortugalTimezone(schedule.schedule_date, schedule.hour);
-            const scheduleEnd = getDateInPortugalTimezone(
-              schedule.schedule_date,
-              schedule.hour_end,
-            );
+      if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
+        const hasSchedule = schedulesAndCanceledDays.find((schedule) => {
+          const scheduleStart = getDateInPortugalTimezone(schedule.schedule_date, schedule.hour);
+          const scheduleEnd = getDateInPortugalTimezone(
+            schedule.schedule_date,
+            schedule.hour_end,
+          );
 
-            if (dateSelected.toMillis() >= scheduleStart.toMillis()
+          if (dateSelected.toMillis() >= scheduleStart.toMillis()
             && dateSelected.toMillis() < scheduleEnd.toMillis()) {
-              return true;
-            }
-            return false;
-          });
-
-          if (hasSchedule) {
-            hourAvaliable = false;
-          } else {
-            hourAvaliable = hourString;
+            return true;
           }
-        } else {
+          return false;
+        });
+
+        if (hasSchedule) {
           hourAvaliable = false;
+        } else {
+          hourAvaliable = hourString;
         }
+      } else {
+        hourAvaliable = false;
       }
     } else {
       hourAvaliable = false;
     }
     return hourAvaliable !== false;
   });
+
+  console.log(hoursAvailable);
 
   const {
     errors,
@@ -121,30 +127,49 @@ export default function ScheduleForm() {
     && errors.length === 0
   );
 
-  const loadSchedules = useCallback(async () => {
+  console.log(selectedDate);
+
+  // const loadSchedules = useCallback(async () => {
+  //   try {
+  //     setIsLoadingSchedules(true);
+  //     if (hasSelectedDate) {
+  //       const dateMounted = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
+  //       // const [schedulesList, canceledDaysList] = await Promise.all([
+  //       //   SchedulesService.listSchedules(dateMounted),
+  //       //   SchedulesService.listCanceledDays(),
+  //       // ]);
+  //       const schedulesList = await SchedulesService.listSchedules(dateMounted);
+  //       setSchedules(schedulesList);
+
+  //       setHasError(false);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     setHasError(true);
+  //     setSchedules([]);
+  //   } finally {
+  //     setIsLoadingSchedules(false);
+  //   }
+  // }, [hasSelectedDate, selectedDate]);
+
+  const loadAllSchedules = useCallback(async () => {
     try {
       setIsLoadingSchedules(true);
-      if (hasSelectedDate) {
-        const dateMounted = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
-        const [schedulesList, canceledDaysList] = await Promise.all([
-          SchedulesService.listSchedules(dateMounted),
-          SchedulesService.listCanceledDays(),
-        ]);
-        setSchedules(schedulesList);
+      const schedulesAndCanceledDaysList = await SchedulesService.listSchedulesAndCanceledDays();
 
-        setCanceledDays(canceledDaysList);
-        setHasError(false);
-      }
+      setSchedulesAndCanceledDays(schedulesAndCanceledDaysList);
+      setHasError(false);
     } catch (error) {
       console.log(error);
       setHasError(true);
-      setSchedules([]);
+      setSchedulesAndCanceledDays([]);
     } finally {
       setIsLoadingSchedules(false);
     }
-  }, [hasSelectedDate, selectedDate]);
+  }, []);
 
   useEffect(() => {
+    loadAllSchedules();
     async function loadServices() {
       try {
         const servicesList = await ServicesService.listServices();
@@ -157,12 +182,12 @@ export default function ScheduleForm() {
       }
     }
 
-    loadSchedules();
+    // loadSchedules();
     loadServices();
-  }, [loadSchedules]);
+  }, [loadAllSchedules]);
 
   function handleTryAgain() {
-    loadSchedules();
+    loadAllSchedules();
   }
 
   function handleNameChange(event) {
@@ -216,7 +241,7 @@ export default function ScheduleForm() {
 
       const dateSelectedEnd = dateSelectedStart.plus({ minutes: selectedService.duration });
 
-      const isDateEndInBetweenScheduleDate = schedules.find((schedule) => {
+      const isDateEndInBetweenScheduleDate = schedulesAndCanceledDays.find((schedule) => {
         let dateIsInBetweenScheduleDate = false;
         const scheduleDateStart = getDateInPortugalTimezone(schedule.schedule_date, schedule.hour);
 
@@ -348,6 +373,8 @@ export default function ScheduleForm() {
             setSelectedHour={setSelectedHour}
             isSubmitting={isSubmitting}
             setHasError={setHasError}
+            allSchedules={schedulesAndCanceledDays}
+            allHours={hours}
           />
           <HourContainer>
             {(hasHoursAvailable && !hasError && !isLoadingSchedules) && (

@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { DateTime } from 'luxon';
 import { Container } from './styles';
 
 import chevronLeft from '../../assets/images/icons/chevron-left.svg';
 import chevronRight from '../../assets/images/icons/chevron-right.svg';
+import getCurrentDateAndHour from '../../utils/getCurrentDateAndHour';
+import mountDate from '../../utils/mountDate';
+import { zoneFormat } from '../../utils/zoneFormat';
+import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
 
 export default function Calendar({
   selectedDate,
@@ -11,6 +16,8 @@ export default function Calendar({
   setSelectedHour,
   setHasError,
   isSubmitting = false,
+  allSchedules,
+  allHours,
 }) {
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState(new Date());
@@ -52,7 +59,58 @@ export default function Calendar({
 
       const datePassed = dayDate.getTime() < todayDate.getTime();
 
-      const inactive = datePassed || isSunday ? 'inactive' : '';
+      let isDateNotAvailable = false;
+
+      const hoursAvailable = allHours.filter((hourString) => {
+        const { currentDateAndHour } = getCurrentDateAndHour();
+
+        let hourAvaliable = false;
+        const dateString = mountDate(currentYear, currentMonth, `${i}`);
+
+        const isDayCanceled = allSchedules.find(
+          (schedule) => (schedule.schedule_date === dateString && !schedule.available),
+        );
+
+        if (isDayCanceled) {
+          isDateNotAvailable = true;
+          return false;
+        }
+        const dateSelected = DateTime.fromISO(`${dateString}T${hourString}`, { zone: zoneFormat });
+
+        if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
+          const hasSchedule = allSchedules.find((schedule) => {
+            const scheduleStart = getDateInPortugalTimezone(
+              schedule.schedule_date,
+              schedule.hour,
+            );
+
+            const scheduleEnd = getDateInPortugalTimezone(
+              schedule.schedule_date,
+              schedule.hour_end,
+            );
+
+            if (dateSelected.toMillis() >= scheduleStart.toMillis()
+                && dateSelected.toMillis() < scheduleEnd.toMillis()) {
+              return true;
+            }
+            return false;
+          });
+
+          if (hasSchedule) {
+            hourAvaliable = false;
+            return false;
+          }
+          hourAvaliable = hourString;
+        } else {
+          return false;
+        }
+        return hourAvaliable !== false;
+      });
+
+      const inactive = datePassed || isSunday || isDateNotAvailable || hoursAvailable.length === 0 ? 'inactive' : '';
+
+      const greenDay = (!inactive && hoursAvailable.length > (allHours.length / 2)) ? 'green-day' : '';
+      const yellowDay = (!inactive && hoursAvailable.length <= allHours.length / 2 && hoursAvailable.length > 0) ? 'yellow-day' : '';
 
       if (isToday && !inactive) {
         setSelectedDate({
@@ -66,7 +124,7 @@ export default function Calendar({
 
       setDays((prevState) => [...prevState, {
         id: Math.random(),
-        className: `${isToday} ${inactive}`,
+        className: `${isToday} ${inactive} ${greenDay} ${yellowDay}`,
         year: currentYear,
         month: currentMonth,
         day: `${i}`,
@@ -84,7 +142,7 @@ export default function Calendar({
     }
 
     setCurrentDate(`${months[currentMonth]} ${currentYear}`);
-  }, [currentMonth, currentYear, date, setSelectedDate]);
+  }, [currentMonth, currentYear, date, setSelectedDate, allHours, allSchedules]);
 
   useEffect(() => {
     setDays([]);
@@ -96,7 +154,9 @@ export default function Calendar({
     setCurrentMonth((prevState) => prevState - 1);
     setSelectedDate({});
     setSelectedHour('');
-    setHasError(false);
+    if (allSchedules.length > 0) {
+      setHasError(false);
+    }
 
     if (currentMonth <= 0) {
       setDate(new Date(currentYear, currentMonth));
@@ -112,7 +172,9 @@ export default function Calendar({
     setCurrentMonth((prevState) => prevState + 1);
     setSelectedDate({});
     setSelectedHour('');
-    setHasError(false);
+    if (allSchedules.length > 0) {
+      setHasError(false);
+    }
 
     if (currentMonth >= 11) {
       setDate(new Date(currentYear, currentMonth));
@@ -204,4 +266,6 @@ Calendar.propTypes = {
   setSelectedHour: PropTypes.func.isRequired,
   setHasError: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
+  allSchedules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  allHours: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

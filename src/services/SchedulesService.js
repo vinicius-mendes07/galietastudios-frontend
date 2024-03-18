@@ -12,6 +12,13 @@ class SchedulesService {
     return data;
   }
 
+  async listSchedulesAndCanceledDays() {
+    await delay(2000);
+
+    const { data } = await api.get('/schedules/schedules-and-canceled-days');
+    return data;
+  }
+
   async listCanceledDays() {
     await delay(2000);
     const { data } = await api.get('/schedules/canceled');

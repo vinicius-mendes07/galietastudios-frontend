@@ -113,7 +113,31 @@ export const Container = styled.div`
             &:hover::before {
               background-color: ${({ theme }) => theme.colors.dark.light};
             }
+
+            &:disabled {
+              &:hover::before{
+                background-color: transparent;
+                background-color: ${({ theme }) => theme.colors.dark.lighter};
+            }
+          }
         }
+
+        .green-day {
+          color: ${({ theme }) => theme.colors.success.dark};
+
+          &::before {
+            background-color: ${({ theme }) => theme.colors.success.light};
+          }
+        }
+
+        .yellow-day {
+          color: #976407;
+
+          &::before {
+            background-color: #fdd170;
+          }
+        }
+
         .selected-day {
           color: #fff;
 
