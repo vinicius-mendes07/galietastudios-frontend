@@ -6,4 +6,8 @@ export const Container = styled.div`
   left: 50%;
   z-index: 5;
   transform: translateX(-50%);
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 80%;
+  }
 `;
