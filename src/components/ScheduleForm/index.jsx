@@ -164,25 +164,27 @@ export default function ScheduleForm() {
     }
   }, []);
 
+  const loadServices = useCallback(async () => {
+    try {
+      const servicesList = await ServicesService.listServices();
+
+      setServices(servicesList);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingServices(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadAllSchedules();
-    async function loadServices() {
-      try {
-        const servicesList = await ServicesService.listServices();
-
-        setServices(servicesList);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoadingServices(false);
-      }
-    }
 
     // loadSchedules();
     loadServices();
-  }, [loadAllSchedules]);
+  }, [loadAllSchedules, loadServices]);
 
   function handleTryAgain() {
+    loadServices();
     loadAllSchedules();
   }
 
