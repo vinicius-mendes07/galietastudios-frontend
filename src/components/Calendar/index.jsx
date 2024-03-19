@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useState, memo,
+} from 'react';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
 import { Container } from './styles';
@@ -10,11 +12,11 @@ import mountDate from '../../utils/mountDate';
 import { zoneFormat } from '../../utils/zoneFormat';
 import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
 
-export default function Calendar({
+function Calendar({
   selectedDate,
-  setSelectedDate,
-  setSelectedHour,
-  setHasError,
+  onSelectedDate,
+  onSelectedHour,
+  onHasError,
   isSubmitting = false,
   allSchedules,
   allHours,
@@ -113,7 +115,7 @@ export default function Calendar({
       const yellowDay = (!inactive && hoursAvailable.length <= allHours.length / 2 && hoursAvailable.length > 0) ? 'yellow-day' : '';
 
       if (isToday && !inactive) {
-        setSelectedDate({
+        onSelectedDate({
           id: Math.random(),
           className: `${isToday} ${inactive}`,
           year: currentYear,
@@ -142,7 +144,7 @@ export default function Calendar({
     }
 
     setCurrentDate(`${months[currentMonth]} ${currentYear}`);
-  }, [currentMonth, currentYear, date, setSelectedDate, allHours, allSchedules]);
+  }, [currentMonth, currentYear, date, onSelectedDate, allHours, allSchedules]);
 
   useEffect(() => {
     setDays([]);
@@ -152,10 +154,10 @@ export default function Calendar({
 
   function handlePrevClick() {
     setCurrentMonth((prevState) => prevState - 1);
-    setSelectedDate({});
-    setSelectedHour('');
+    onSelectedDate({});
+    onSelectedHour('');
     if (allSchedules.length > 0) {
-      setHasError(false);
+      onHasError(false);
     }
 
     if (currentMonth <= 0) {
@@ -170,10 +172,10 @@ export default function Calendar({
 
   function handleNextClick() {
     setCurrentMonth((prevState) => prevState + 1);
-    setSelectedDate({});
-    setSelectedHour('');
+    onSelectedDate({});
+    onSelectedHour('');
     if (allSchedules.length > 0) {
-      setHasError(false);
+      onHasError(false);
     }
 
     if (currentMonth >= 11) {
@@ -188,8 +190,8 @@ export default function Calendar({
   }
 
   function handleSelectDay(day) {
-    setSelectedDate(day);
-    setSelectedHour('');
+    onSelectedDate(day);
+    onSelectedHour('');
   }
 
   return (
@@ -262,10 +264,12 @@ Calendar.propTypes = {
     month: PropTypes.number,
     day: PropTypes.string,
   }).isRequired,
-  setSelectedDate: PropTypes.func.isRequired,
-  setSelectedHour: PropTypes.func.isRequired,
-  setHasError: PropTypes.func.isRequired,
+  onSelectedDate: PropTypes.func.isRequired,
+  onSelectedHour: PropTypes.func.isRequired,
+  onHasError: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
   allSchedules: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   allHours: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
+
+export default memo(Calendar);

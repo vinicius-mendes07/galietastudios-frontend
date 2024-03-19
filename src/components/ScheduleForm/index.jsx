@@ -108,8 +108,6 @@ export default function ScheduleForm() {
     return hourAvaliable !== false;
   });
 
-  console.log(hoursAvailable);
-
   const {
     errors,
     setError,
@@ -126,8 +124,6 @@ export default function ScheduleForm() {
     && selectedHour
     && errors.length === 0
   );
-
-  console.log(selectedDate);
 
   // const loadSchedules = useCallback(async () => {
   //   try {
@@ -304,6 +300,17 @@ export default function ScheduleForm() {
     }
   }
 
+  const handleSelectedDate = useCallback((date) => {
+    setSelectedDate(date);
+  }, []);
+
+  const handleSelectedHour = useCallback((hour) => {
+    setSelectedHour(hour);
+  }, []);
+  const handleHasError = useCallback((error) => {
+    setHasError(error);
+  }, []);
+
   const hasHoursAvailable = hoursAvailable.length > 0;
   const isListEmpty = (!hasHoursAvailable && !hasError && hasSelectedDate)
    || (isLoadingSchedules && !hasError);
@@ -369,10 +376,10 @@ export default function ScheduleForm() {
         <CalendarContainer>
           <Calendar
             selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            setSelectedHour={setSelectedHour}
+            onSelectedDate={handleSelectedDate}
+            onSelectedHour={handleSelectedHour}
             isSubmitting={isSubmitting}
-            setHasError={setHasError}
+            onHasError={handleHasError}
             allSchedules={schedulesAndCanceledDays}
             allHours={hours}
           />

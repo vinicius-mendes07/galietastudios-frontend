@@ -104,6 +104,25 @@ export const Container = styled.div`
           }
         }
 
+        .green-day {
+          color: ${({ theme }) => theme.colors.success.dark};
+
+          &::before {
+            background-color: ${({ theme }) => theme.colors.success.light};
+          }
+          &:hover::before {
+            background-color: ${({ theme }) => theme.colors.white.main};
+          }
+        }
+
+        .yellow-day {
+          color: #976407;
+
+          &::before {
+            background-color: #fdd170;
+          }
+        }
+
         .today {
             color: #fff;
 
@@ -119,22 +138,6 @@ export const Container = styled.div`
                 background-color: transparent;
                 background-color: ${({ theme }) => theme.colors.dark.lighter};
             }
-          }
-        }
-
-        .green-day {
-          color: ${({ theme }) => theme.colors.success.dark};
-
-          &::before {
-            background-color: ${({ theme }) => theme.colors.success.light};
-          }
-        }
-
-        .yellow-day {
-          color: #976407;
-
-          &::before {
-            background-color: #fdd170;
           }
         }
 
