@@ -15,9 +15,12 @@ export const Container = styled.aside`
   a {
     text-decoration: none;
     color: #fff;
-    background-color: ${({ theme }) => theme.colors.dark.dark};
     padding: 10px 20px;
     border-radius: 4px;
+  }
+
+  .active {
+    background-color: ${({ theme }) => theme.colors.dark.dark};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {

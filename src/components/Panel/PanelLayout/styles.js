@@ -8,5 +8,6 @@ export const Container = styled.div`
     height: 100%;
     max-width: calc(100vw - 220px);
     margin-left: 220px;
+    padding: 40px;
   }
 `;

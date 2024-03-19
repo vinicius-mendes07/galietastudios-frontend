@@ -1,3 +1,5 @@
+import { Outlet } from 'react-router-dom';
+
 import Header from '../Header';
 import SideBar from '../SideBar';
 import { Container } from './styles';
@@ -8,58 +10,7 @@ export default function PanelLayout() {
       <Header />
       <div className="content">
         <SideBar />
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
-        <h1>Panel layout</h1>
+        <Outlet />
       </div>
     </Container>
   );
