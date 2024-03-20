@@ -10,4 +10,10 @@ export const Container = styled.div`
     margin-left: 220px;
     padding: 40px;
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    .content {
+      padding: 40px 24px;
+    }
+  }
 `;

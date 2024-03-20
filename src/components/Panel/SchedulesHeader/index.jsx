@@ -14,7 +14,7 @@ export default function SchedulesHeader() {
               className={pathname === '/panel' ? 'active' : ''}
               to="/panel"
             >
-              Agendamentos pendentes
+              Pendentes
             </Link>
           </li>
           <li>
@@ -22,7 +22,7 @@ export default function SchedulesHeader() {
               className={pathname === '/panel/confirmed' ? 'active' : ''}
               to="/panel/confirmed"
             >
-              Agendamentos confirmados
+              Confirmados
             </Link>
           </li>
         </ul>

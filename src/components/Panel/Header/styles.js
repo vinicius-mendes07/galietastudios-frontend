@@ -6,6 +6,7 @@ export const Container = styled.header`
   top: 0;
   background-color: #fff;
   z-index: 3;
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.04);
 
   .container {
     display: flex;

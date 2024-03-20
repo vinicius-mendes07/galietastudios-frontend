@@ -31,6 +31,8 @@ export const Card = styled.div`
       .name {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
 
         strong {
 
@@ -39,7 +41,6 @@ export const Card = styled.div`
         small {
           padding: 4px 8px;
           border-radius: 4px;
-          margin-left: 8px;
           color: ${({ theme }) => theme.colors.dark.light};
           background-color: ${({ theme }) => theme.colors.white.main};
         }
