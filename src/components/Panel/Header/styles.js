@@ -14,7 +14,6 @@ export const Container = styled.header`
     max-width: 1200px;
     margin: 0 auto;
 
-
     img {
       display: block;
       max-width: 100px;
@@ -94,11 +93,6 @@ export const Container = styled.header`
 
   }
 
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-
-  }
-
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: 10px 20px;
 
@@ -108,7 +102,6 @@ export const Container = styled.header`
 
     .container {
       .user-container {
-        /* background-color: red; */
         justify-content: flex-end;
       }
     }
