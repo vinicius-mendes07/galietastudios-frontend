@@ -11,6 +11,7 @@ export default function SchedulesList({
   schedules,
   hasConfirmBtn = false,
   onDelete,
+  onConfirm,
 }) {
   return (
     <Container>
@@ -50,7 +51,7 @@ export default function SchedulesList({
               <button
                 type="button"
                 className="btn-confirm"
-                onClick={() => alert('falta fazer de confirmar')}
+                onClick={() => onConfirm(schedule)}
               >
                 <img src={checkCircle} alt="confirm" />
               </button>
@@ -90,4 +91,5 @@ SchedulesList.propTypes = {
   })).isRequired,
   hasConfirmBtn: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func,
 };

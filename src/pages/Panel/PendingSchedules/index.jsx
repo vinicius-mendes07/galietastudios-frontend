@@ -83,45 +83,73 @@ export default function PendingSchedules() {
   ]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [scheduleBeingDeleted, setScheduleBeingDeleted] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(null);
-
-  // function handleConfirmSchedule(schedule) {
-  //   console.log(`Confirmou o agendamento de ${schedule.client_name}`);
-  //   setIsModalVisible(true);
-  // }
-
-  const handleOpenDeleteScheduleModal = useCallback((schedule) => {
-    setScheduleBeingDeleted(schedule);
-    setIsModalVisible(true);
-  }, []);
+  const [scheduleBeingConfirmed, setScheduleBeingConfirmed] = useState(null);
+  const [isLoadingModal, setIsLoadingModal] = useState(null);
+  const [isDanger, setIsDanger] = useState(false);
 
   function handleCloseModal() {
     setIsModalVisible(false);
   }
 
-  async function handleConfirmDeleteSchedule() {
+  const handleOpenConfirmScheduleModal = useCallback((schedule) => {
+    setScheduleBeingConfirmed(schedule);
+    setIsModalVisible(true);
+    setIsDanger(false);
+  }, []);
+
+  async function handleConfirmSchedule() {
     try {
-      setIsLoadingDelete(true);
+      setIsLoadingModal(true);
+      await delay(1000);
+      // await SchedulesService.confirmSchedule(scheduleBeingConfirmed.id);
+
+      setSchedules((prevState) => prevState.filter(
+        (schedule) => schedule.id !== scheduleBeingConfirmed.id,
+      ));
+      handleCloseModal();
+
+      toast({
+        type: 'success',
+        text: 'Agendamento confirmado com sucesso!',
+      });
+    } catch {
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao confirmar o agendamento!',
+      });
+    } finally {
+      setIsLoadingModal(false);
+    }
+  }
+
+  const handleOpenDeleteScheduleModal = useCallback((schedule) => {
+    setScheduleBeingDeleted(schedule);
+    setIsModalVisible(true);
+    setIsDanger(true);
+  }, []);
+
+  async function handleDeleteSchedule() {
+    try {
+      setIsLoadingModal(true);
       await delay(1000);
       // await ContactsService.deleteContact(contactBeingDeleted.id);
 
-      throw new Error();
-      // setSchedules((prevState) => prevState.filter(
-      //   (schedule) => schedule.id !== scheduleBeingDeleted.id,
-      // ));
-      // handleCloseModal();
+      setSchedules((prevState) => prevState.filter(
+        (schedule) => schedule.id !== scheduleBeingDeleted.id,
+      ));
+      handleCloseModal();
 
-      // toast({
-      //   type: 'success',
-      //   text: 'Agendamento cancelado com sucesso!',
-      // });
+      toast({
+        type: 'success',
+        text: 'Agendamento cancelado com sucesso!',
+      });
     } catch {
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao cancelar o agendamento!',
       });
     } finally {
-      setIsLoadingDelete(false);
+      setIsLoadingModal(false);
     }
   }
 
@@ -136,15 +164,21 @@ export default function PendingSchedules() {
             schedules={schedules}
             hasConfirmBtn
             onDelete={handleOpenDeleteScheduleModal}
+            onConfirm={handleOpenConfirmScheduleModal}
           />
           <Modal
-            danger
+            danger={isDanger}
             visible={isModalVisible}
-            isLoading={isLoadingDelete}
-            title={`Tem certeza que deseja excluir o agendamento de "${scheduleBeingDeleted?.client_name}"?`}
-            confirmLabel="Deletar"
+            isLoading={isLoadingModal}
+            title={
+              isDanger ? `Tem certeza que deseja excluir o agendamento de "${scheduleBeingDeleted?.client_name}"?`
+                : `Tem certeza que deseja confirmar o agendamento de "${scheduleBeingConfirmed?.client_name}"?`
+            }
+            confirmLabel={
+              isDanger ? 'Deletar' : 'Confirmar'
+            }
             onCancel={handleCloseModal}
-            onConfirm={handleConfirmDeleteSchedule}
+            onConfirm={isDanger ? handleDeleteSchedule : handleConfirmSchedule}
           >
             <p>Esta ação não poderá ser desfeita!</p>
           </Modal>
