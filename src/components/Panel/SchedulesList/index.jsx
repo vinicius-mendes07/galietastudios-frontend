@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Container, Card } from './styles';
 
 import formatPhoneBR from '../../../utils/formatPhoneBR';
@@ -6,82 +7,11 @@ import trash from '../../../assets/images/icons/trash.svg';
 import checkCircle from '../../../assets/images/icons/check-circle.svg';
 import getDateAndHourInPortugalTimeZone from '../../../utils/getDateAndHourInPortugalTimezone';
 
-const schedules = [
-  {
-    id: Math.random(),
-    client_name: 'Mateus',
-    client_phone: '48568648987',
-    client_email: 'mateus@email.com',
-    hour: '14:00',
-    hour_end: '15:00',
-    schedule_date: '2024-03-21',
-    available: false,
-    status: 'pending',
-    service_id: 'few79few-few7f-fwef-ffsnbjk',
-    service_type: 'Cabelo e Barba',
-    duration: 60,
-    user_id: 'few79few-few7f-fwef-ffsnbjk',
-    barber_name: 'joe',
-    barber_phone: '52153415',
-    barber_email: 'joe@email.com',
-  },
-  {
-    id: Math.random(),
-    client_name: 'Lucas',
-    client_phone: '48568648987',
-    client_email: 'lucas@email.com',
-    hour: '14:00',
-    hour_end: '15:00',
-    schedule_date: '2024-03-21',
-    available: false,
-    status: 'pending',
-    service_id: 'few79few-few7f-fwef-ffsnbjk',
-    service_type: 'Cabelo e Barba',
-    duration: 30,
-    user_id: 'few79few-few7f-fwef-ffsnbjk',
-    barber_name: 'joe',
-    barber_phone: '52153415',
-    barber_email: 'joe@email.com',
-  },
-  {
-    id: Math.random(),
-    client_name: 'Joao',
-    client_phone: '48568648987',
-    client_email: 'joao@email.com',
-    hour: '14:00',
-    hour_end: '15:00',
-    schedule_date: '2024-03-21',
-    available: false,
-    status: 'pending',
-    service_id: 'few79few-few7f-fwef-ffsnbjk',
-    service_type: 'Cabelo e Barba',
-    duration: 60,
-    user_id: 'few79few-few7f-fwef-ffsnbjk',
-    barber_name: 'joe',
-    barber_phone: '52153415',
-    barber_email: 'joe@email.com',
-  },
-  {
-    id: Math.random(),
-    client_name: 'Pedro',
-    client_phone: '48568648987',
-    client_email: 'pedro@email.com',
-    hour: '14:00',
-    hour_end: '15:00',
-    schedule_date: '2024-03-21',
-    available: false,
-    status: 'pending',
-    service_id: 'few79few-few7f-fwef-ffsnbjk',
-    service_type: 'Cabelo e Barba',
-    duration: 60,
-    user_id: 'few79few-few7f-fwef-ffsnbjk',
-    barber_name: 'joe',
-    barber_phone: '52153415',
-    barber_email: 'joe@email.com',
-  },
-];
-
-export default function SchedulesList() {
+export default function SchedulesList({
+  schedules,
+  hasConfirmBtn = false,
+  onDelete,
+}) {
   return (
     <Container>
       {schedules.map((schedule) => (
@@ -116,15 +46,19 @@ export default function SchedulesList() {
             <span className="service-type">{schedule.service_type}</span>
           </div>
           <div className="actions">
-            <button
-              type="button"
-              className="btn-confirm"
-            >
-              <img src={checkCircle} alt="confirm" />
-            </button>
+            {hasConfirmBtn && (
+              <button
+                type="button"
+                className="btn-confirm"
+                onClick={() => alert('falta fazer de confirmar')}
+              >
+                <img src={checkCircle} alt="confirm" />
+              </button>
+            )}
             <button
               type="button"
               className="btn-delete"
+              onClick={() => onDelete(schedule)}
             >
               <img src={trash} alt="delete" />
             </button>
@@ -134,3 +68,26 @@ export default function SchedulesList() {
     </Container>
   );
 }
+
+SchedulesList.propTypes = {
+  schedules: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    client_name: PropTypes.string.isRequired,
+    client_phone: PropTypes.string.isRequired,
+    client_email: PropTypes.string.isRequired,
+    hour: PropTypes.string.isRequired,
+    hour_end: PropTypes.string.isRequired,
+    schedule_date: PropTypes.string.isRequired,
+    available: PropTypes.bool.isRequired,
+    status: PropTypes.string.isRequired,
+    service_id: PropTypes.string.isRequired,
+    service_type: PropTypes.string.isRequired,
+    duration: PropTypes.number.isRequired,
+    user_id: PropTypes.string.isRequired,
+    barber_name: PropTypes.string.isRequired,
+    barber_phone: PropTypes.string.isRequired,
+    barber_email: PropTypes.string.isRequired,
+  })).isRequired,
+  hasConfirmBtn: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};

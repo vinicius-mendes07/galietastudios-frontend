@@ -4,10 +4,6 @@ export const Container = styled.div`
   margin-top: 40px;
   max-width: 500px;
   width: 100%;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-
-  }
 `;
 
 export const Card = styled.div`
@@ -34,10 +30,6 @@ export const Card = styled.div`
         flex-wrap: wrap;
         gap: 8px;
 
-        strong {
-
-        }
-
         small {
           padding: 4px 8px;
           border-radius: 4px;
@@ -54,11 +46,6 @@ export const Card = styled.div`
     .date-wrapper {
 
       .date {
-
-        strong {
-
-        }
-
         span {
           margin-left: 8px;
         }
@@ -80,11 +67,11 @@ export const Card = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 8px;
 
     button {
       background-color: transparent;
       border: none;
-
     }
 
     .btn-confirm {
@@ -95,10 +82,6 @@ export const Card = styled.div`
         border-radius: 4px;
         padding: 3px;
       }
-    }
-
-    .btn-delete {
-      margin-left: 8px;
     }
   }
 `;
