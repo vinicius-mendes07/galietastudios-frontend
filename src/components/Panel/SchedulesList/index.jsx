@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useCallback, useState } from 'react';
 import { Container, Card } from './styles';
 
 import formatPhoneBR from '../../../utils/formatPhoneBR';
@@ -6,13 +7,88 @@ import formatPhoneBR from '../../../utils/formatPhoneBR';
 import trash from '../../../assets/images/icons/trash.svg';
 import checkCircle from '../../../assets/images/icons/check-circle.svg';
 import getDateAndHourInPortugalTimeZone from '../../../utils/getDateAndHourInPortugalTimezone';
+import delay from '../../../utils/delay';
+import toast from '../../../utils/toast';
+
+import Modal from '../../Modal';
 
 export default function SchedulesList({
   schedules,
+  setSchedules,
   hasConfirmBtn = false,
-  onDelete,
-  onConfirm,
 }) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [scheduleBeingDeleted, setScheduleBeingDeleted] = useState(null);
+  const [scheduleBeingConfirmed, setScheduleBeingConfirmed] = useState(null);
+  const [isLoadingModal, setIsLoadingModal] = useState(null);
+  const [isDanger, setIsDanger] = useState(false);
+
+  function handleCloseModal() {
+    setIsModalVisible(false);
+  }
+
+  const handleOpenConfirmScheduleModal = useCallback((schedule) => {
+    setScheduleBeingConfirmed(schedule);
+    setIsModalVisible(true);
+    setIsDanger(false);
+  }, []);
+
+  async function handleConfirmSchedule() {
+    try {
+      setIsLoadingModal(true);
+      await delay(1000);
+      // await SchedulesService.confirmSchedule(scheduleBeingConfirmed.id);
+
+      setSchedules((prevState) => prevState.filter(
+        (schedule) => schedule.id !== scheduleBeingConfirmed.id,
+      ));
+      handleCloseModal();
+
+      toast({
+        type: 'success',
+        text: 'Agendamento confirmado com sucesso!',
+      });
+    } catch {
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao confirmar o agendamento!',
+      });
+    } finally {
+      setIsLoadingModal(false);
+    }
+  }
+
+  const handleOpenDeleteScheduleModal = useCallback((schedule) => {
+    setScheduleBeingDeleted(schedule);
+    setIsModalVisible(true);
+    setIsDanger(true);
+  }, []);
+
+  async function handleDeleteSchedule() {
+    try {
+      setIsLoadingModal(true);
+      await delay(1000);
+      // await ContactsService.deleteContact(contactBeingDeleted.id);
+
+      setSchedules((prevState) => prevState.filter(
+        (schedule) => schedule.id !== scheduleBeingDeleted.id,
+      ));
+      handleCloseModal();
+
+      toast({
+        type: 'success',
+        text: 'Agendamento cancelado com sucesso!',
+      });
+    } catch {
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao cancelar o agendamento!',
+      });
+    } finally {
+      setIsLoadingModal(false);
+    }
+  }
+
   return (
     <Container>
       {schedules.map((schedule) => (
@@ -51,7 +127,7 @@ export default function SchedulesList({
               <button
                 type="button"
                 className="btn-confirm"
-                onClick={() => onConfirm(schedule)}
+                onClick={() => handleOpenConfirmScheduleModal(schedule)}
               >
                 <img src={checkCircle} alt="confirm" />
               </button>
@@ -59,13 +135,29 @@ export default function SchedulesList({
             <button
               type="button"
               className="btn-delete"
-              onClick={() => onDelete(schedule)}
+              onClick={() => handleOpenDeleteScheduleModal(schedule)}
             >
               <img src={trash} alt="delete" />
             </button>
           </div>
         </Card>
       ))}
+      <Modal
+        danger={isDanger}
+        visible={isModalVisible}
+        isLoading={isLoadingModal}
+        title={
+          isDanger ? `Tem certeza que deseja excluir o agendamento de "${scheduleBeingDeleted?.client_name}"?`
+            : `Tem certeza que deseja confirmar o agendamento de "${scheduleBeingConfirmed?.client_name}"?`
+        }
+        confirmLabel={
+          isDanger ? 'Deletar' : 'Confirmar'
+        }
+        onCancel={handleCloseModal}
+        onConfirm={isDanger ? handleDeleteSchedule : handleConfirmSchedule}
+      >
+        <p>Esta ação não poderá ser desfeita!</p>
+      </Modal>
     </Container>
   );
 }
@@ -89,7 +181,6 @@ SchedulesList.propTypes = {
     barber_phone: PropTypes.string.isRequired,
     barber_email: PropTypes.string.isRequired,
   })).isRequired,
-  hasConfirmBtn: PropTypes.bool.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func,
+  hasConfirmBtn: PropTypes.bool,
+  setSchedules: PropTypes.func.isRequired,
 };

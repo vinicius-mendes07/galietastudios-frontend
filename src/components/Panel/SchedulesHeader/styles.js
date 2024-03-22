@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.header`
+  margin-bottom: 48px;
   h1 {
     margin-bottom: 24px;
   }
