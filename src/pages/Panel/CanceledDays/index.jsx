@@ -62,15 +62,16 @@ export default function CanceledDays() {
         path="/panel/cancel-day"
       />
 
-      {hasCanceledDays && (
+      <div className="page-body">
+        {hasCanceledDays && (
         <>
           {canceledDays.map((canceledDay) => (
             <Card key={canceledDay.id}>
               <div className="info">
                 <strong>
                   {
-                formatDate(canceledDay.schedule_date)
-              }
+                    formatDate(canceledDay.schedule_date)
+                  }
                 </strong>
               </div>
               <div className="actions">
@@ -97,7 +98,9 @@ export default function CanceledDays() {
             <p>Novos agendamentos poderão ser feitos nessa data!</p>
           </Modal>
         </>
-      )}
+        )}
+      </div>
+
     </Container>
   );
 }

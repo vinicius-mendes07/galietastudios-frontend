@@ -26,7 +26,7 @@ export default function Sidebar() {
           Agendamentos
         </Link>
         <Link
-          className={pathname === '/panel/services' ? 'active' : ''}
+          className={pathname === '/panel/services' || pathname === '/panel/services/new' ? 'active' : ''}
           to="/panel/services"
           onClick={closeMenu}
         >

@@ -5,7 +5,9 @@ import Home from './pages/Home';
 import CancelDay from './pages/Panel/CancelDay';
 import CanceledDays from './pages/Panel/CanceledDays';
 import ConfirmedSchedules from './pages/Panel/ConfirmedSchedules';
+import NewService from './pages/Panel/NewService';
 import PendingSchedules from './pages/Panel/PendingSchedules';
+import Services from './pages/Panel/Services';
 import Schedule from './pages/Schedule';
 import ScheduleSuccess from './pages/ScheduleSuccess';
 
@@ -54,6 +56,14 @@ export default function Router() {
         {
           path: 'cancel-day',
           element: <CancelDay />,
+        },
+        {
+          path: 'services',
+          element: <Services />,
+        },
+        {
+          path: 'services/new',
+          element: <NewService />,
         },
       ],
     },

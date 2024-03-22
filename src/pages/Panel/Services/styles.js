@@ -21,8 +21,10 @@ export const Card = styled.div`
     margin-top: 16px;
   }
 
-  button {
-    background-color: transparent;
-    border: none;
+  .actions {
+    button {
+      background-color: transparent;
+      border: none;
+    }
   }
 `;

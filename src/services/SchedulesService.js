@@ -25,6 +25,18 @@ class SchedulesService {
     return data;
   }
 
+  async listPending() {
+    // await delay(2000);
+    // const { data } = await api.get('/schedules/canceled');
+    // return data;
+  }
+
+  async listConfirmed() {
+    // await delay(2000);
+    // const { data } = await api.get('/schedules/canceled');
+    // return data;
+  }
+
   async createSchedule({
     name,
     phone,
@@ -45,6 +57,20 @@ class SchedulesService {
     });
 
     return data;
+  }
+
+  async confirmPending() {
+    //
+  }
+
+  async cancelDay({ schedule_date }) {
+    const { data } = await api.post('/schedules/cancel-day', { schedule_date });
+
+    return data;
+  }
+
+  async deleteSchedule() {
+    //
   }
 }
 

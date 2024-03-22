@@ -8,12 +8,11 @@ export default function CancelDay() {
 
   function handleDateChange(event) {
     setDate(event.target.value);
-    console.log(event.target.value);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log({ date });
+    console.log({ schedule_date: date });
   }
   return (
     <Container onSubmit={handleSubmit}>
