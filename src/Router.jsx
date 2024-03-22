@@ -2,6 +2,8 @@ import { useRoutes } from 'react-router-dom';
 import Layout from './components/Layout';
 import PanelLayout from './components/Panel/PanelLayout';
 import Home from './pages/Home';
+import CancelDay from './pages/Panel/CancelDay';
+import CanceledDays from './pages/Panel/CanceledDays';
 import ConfirmedSchedules from './pages/Panel/ConfirmedSchedules';
 import PendingSchedules from './pages/Panel/PendingSchedules';
 import Schedule from './pages/Schedule';
@@ -44,6 +46,14 @@ export default function Router() {
         {
           path: 'confirmed',
           element: <ConfirmedSchedules />,
+        },
+        {
+          path: 'canceled-days',
+          element: <CanceledDays />,
+        },
+        {
+          path: 'cancel-day',
+          element: <CancelDay />,
         },
       ],
     },

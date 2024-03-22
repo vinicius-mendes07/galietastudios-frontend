@@ -2,14 +2,17 @@ import styled from 'styled-components';
 
 export const Container = styled.header`
   margin-bottom: 48px;
+
   h1 {
     margin-bottom: 24px;
   }
+
   nav {
     ul {
       list-style: none;
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
 
       li {
         a {

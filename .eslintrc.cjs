@@ -34,6 +34,7 @@ module.exports = {
     'react/jsx-no-bind': 'off',
     'react/no-array-index-key': 'off',
     'jsx-a11y/control-has-associated-label': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
     'class-methods-use-this': 'off',
     'react/jsx-one-expression-per-line': 'off',
     camelcase: 'off',

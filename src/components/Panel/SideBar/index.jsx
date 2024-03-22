@@ -32,6 +32,13 @@ export default function Sidebar() {
         >
           Serviços
         </Link>
+        <Link
+          className={pathname === '/panel/canceled-days' || pathname === '/panel/cancel-day' ? 'active' : ''}
+          to="/panel/canceled-days"
+          onClick={closeMenu}
+        >
+          Dias Cancelados
+        </Link>
 
       </div>
 
