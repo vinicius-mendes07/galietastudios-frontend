@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import CancelDay from './pages/Panel/CancelDay';
 import CanceledDays from './pages/Panel/CanceledDays';
 import ConfirmedSchedules from './pages/Panel/ConfirmedSchedules';
+import EditUser from './pages/Panel/EditUser';
 import NewService from './pages/Panel/NewService';
 import PendingSchedules from './pages/Panel/PendingSchedules';
 import Services from './pages/Panel/Services';
@@ -64,6 +65,10 @@ export default function Router() {
         {
           path: 'services/new',
           element: <NewService />,
+        },
+        {
+          path: 'users/:userId',
+          element: <EditUser />,
         },
       ],
     },

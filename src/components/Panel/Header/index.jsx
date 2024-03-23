@@ -12,7 +12,11 @@ export default function Header() {
     setShowMenu((prevState) => (prevState === '' ? 'show-menu' : ''));
   }
 
-  function closeMenu() {
+  function handleEditUser() {
+    setShowMenu('');
+  }
+
+  function handleLogout() {
     setShowMenu('');
   }
 
@@ -46,13 +50,13 @@ export default function Header() {
 
           <div className="user-info">
             <Link
-              to="/panel"
-              onClick={closeMenu}
+              to="/panel/users/123"
+              onClick={handleEditUser}
             >Meus dados
             </Link>
             <button
               type="button"
-              onClick={closeMenu}
+              onClick={handleLogout}
             >Sair
             </button>
           </div>
