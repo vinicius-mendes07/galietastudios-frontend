@@ -4,7 +4,14 @@ export const Container = styled.form`
   max-width: 500px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  text-align: center;
   margin: 0 auto;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  button {
+    margin-top: 16px;
+  }
 `;
