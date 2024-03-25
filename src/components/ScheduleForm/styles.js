@@ -63,36 +63,6 @@ export const HourButton = styled.button`
   }
 `;
 
-export const EmptyList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  img {
-    max-width: 110px;
-  }
-
-  p {
-    margin-top: 8px;
-    text-align: center;
-  }
-`;
-
-export const ErrorContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  .details {
-    margin-left: 16px;
-
-    strong {
-      font-size: 20px;
-      color: ${({ theme }) => theme.colors.danger.main};
-      margin-bottom: 8px;
-      display: block;
-    }
-  }
-`;
-
 export const DateNotSelected = styled.div`
   p {
     font-weight: bold;

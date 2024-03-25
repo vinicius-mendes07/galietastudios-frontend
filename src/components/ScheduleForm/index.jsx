@@ -11,8 +11,6 @@ import {
   HourContainer,
   ButtonContainer,
   HourButton,
-  EmptyList,
-  ErrorContainer,
   DateNotSelected,
 } from './styles';
 
@@ -23,9 +21,6 @@ import FormGroup from '../FormGroup';
 import { Input } from '../Input';
 import { Select } from '../Select';
 import Button from '../Button';
-
-import emptyBox from '../../assets/images/empty-box.svg';
-import sad from '../../assets/images/sad.svg';
 
 import ServicesService from '../../services/ServicesService';
 import formatPhoneBR from '../../utils/formatPhoneBR';
@@ -40,6 +35,8 @@ import Loader from '../Loader';
 import getDateInPortugalTimezone from '../../utils/getDateInPortugalTimezone';
 import toast from '../../utils/toast';
 import getHourOnly from '../../utils/getHourOnly';
+import EmptyList from '../EmptyList';
+import ErrorContainer from '../ErrorContainer';
 
 export default function ScheduleForm() {
   const [name, setName] = useState('');
@@ -401,26 +398,13 @@ export default function ScheduleForm() {
               ))
             )}
 
-            {isListEmpty && (
-              <EmptyList>
-                <img src={emptyBox} alt="empty box" />
-                <p>Nenhum horário disponivel para esta data</p>
-              </EmptyList>
-            )}
+            {isListEmpty && <EmptyList text="Nenhum horário disponivel para esta data" />}
 
             {hasError && (
-              <ErrorContainer>
-                <img src={sad} alt="sad" />
-                <div className="details">
-                  <strong>Ocorreu um erro ao obter os horários disponíveis!</strong>
-                  <Button
-                    type="button"
-                    onClick={handleTryAgain}
-                  >
-                    Tentar novamente
-                  </Button>
-                </div>
-              </ErrorContainer>
+              <ErrorContainer
+                text="Ocorreu um erro ao obter os horários disponíveis!"
+                onTryAgain={handleTryAgain}
+              />
             )}
             {(!hasSelectedDate && !hasError) && (
               <DateNotSelected>
