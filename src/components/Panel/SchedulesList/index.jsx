@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Container, Card } from './styles';
 
 import formatPhoneBR from '../../../utils/formatPhoneBR';
@@ -7,10 +9,10 @@ import formatPhoneBR from '../../../utils/formatPhoneBR';
 import trash from '../../../assets/images/icons/trash.svg';
 import checkCircle from '../../../assets/images/icons/check-circle.svg';
 import getDateAndHourInPortugalTimeZone from '../../../utils/getDateAndHourInPortugalTimezone';
-import delay from '../../../utils/delay';
 import toast from '../../../utils/toast';
 
 import Modal from '../../Modal';
+import SchedulesService from '../../../services/SchedulesService';
 
 export default function SchedulesList({
   schedules,
@@ -22,6 +24,8 @@ export default function SchedulesList({
   const [scheduleBeingConfirmed, setScheduleBeingConfirmed] = useState(null);
   const [isLoadingModal, setIsLoadingModal] = useState(null);
   const [isDanger, setIsDanger] = useState(false);
+
+  const navigate = useNavigate();
 
   function handleCloseModal() {
     setIsModalVisible(false);
@@ -36,8 +40,7 @@ export default function SchedulesList({
   async function handleConfirmSchedule() {
     try {
       setIsLoadingModal(true);
-      await delay(1000);
-      // await SchedulesService.confirmSchedule(scheduleBeingConfirmed.id);
+      await SchedulesService.confirmPending(scheduleBeingConfirmed.id);
 
       setSchedules((prevState) => prevState.filter(
         (schedule) => schedule.id !== scheduleBeingConfirmed.id,
@@ -48,7 +51,11 @@ export default function SchedulesList({
         type: 'success',
         text: 'Agendamento confirmado com sucesso!',
       });
-    } catch {
+    } catch (error) {
+      if (error?.response?.data?.tokenError) {
+        navigate('/login');
+        return;
+      }
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao confirmar o agendamento!',
@@ -67,8 +74,7 @@ export default function SchedulesList({
   async function handleDeleteSchedule() {
     try {
       setIsLoadingModal(true);
-      await delay(1000);
-      // await ContactsService.deleteContact(contactBeingDeleted.id);
+      await SchedulesService.deleteSchedule(scheduleBeingDeleted.id);
 
       setSchedules((prevState) => prevState.filter(
         (schedule) => schedule.id !== scheduleBeingDeleted.id,
@@ -79,7 +85,11 @@ export default function SchedulesList({
         type: 'success',
         text: 'Agendamento cancelado com sucesso!',
       });
-    } catch {
+    } catch (error) {
+      if (error?.response?.data?.tokenError) {
+        navigate('/login');
+        return;
+      }
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao cancelar o agendamento!',

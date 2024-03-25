@@ -1,87 +1,51 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import EmptyList from '../../../components/EmptyList';
+import ErrorContainer from '../../../components/ErrorContainer';
+import Loader from '../../../components/Loader';
 import SchedulesHeader from '../../../components/Panel/SchedulesHeader';
 import SchedulesList from '../../../components/Panel/SchedulesList';
+import SchedulesService from '../../../services/SchedulesService';
 import { Container } from './styles';
 
 export default function ConfirmedSchedules() {
-  const [schedules, setSchedules] = useState([
-    {
-      id: `${Math.random()}`,
-      client_name: 'Mateus',
-      client_phone: '48568648987',
-      client_email: 'mateus@email.com',
-      hour: '10:00',
-      hour_end: '15:00',
-      schedule_date: '2024-03-21',
-      available: false,
-      status: 'pending',
-      service_id: 'few79few-few7f-fwef-ffsnbjk',
-      service_type: 'Cabelo e Barba',
-      duration: 60,
-      user_id: 'few79few-few7f-fwef-ffsnbjk',
-      barber_name: 'joe',
-      barber_phone: '52153415',
-      barber_email: 'joe@email.com',
-    },
-    {
-      id: `${Math.random()}`,
-      client_name: 'Lucas',
-      client_phone: '48568648987',
-      client_email: 'lucas@email.com',
-      hour: '11:00',
-      hour_end: '15:00',
-      schedule_date: '2024-03-21',
-      available: false,
-      status: 'pending',
-      service_id: 'few79few-few7f-fwef-ffsnbjk',
-      service_type: 'Cabelo e Barba',
-      duration: 30,
-      user_id: 'few79few-few7f-fwef-ffsnbjk',
-      barber_name: 'joe',
-      barber_phone: '52153415',
-      barber_email: 'joe@email.com',
-    },
-    {
-      id: `${Math.random()}`,
-      client_name: 'Joao',
-      client_phone: '48568648987',
-      client_email: 'joao@email.com',
-      hour: '13:00',
-      hour_end: '15:00',
-      schedule_date: '2024-03-21',
-      available: false,
-      status: 'pending',
-      service_id: 'few79few-few7f-fwef-ffsnbjk',
-      service_type: 'Cabelo e Barba',
-      duration: 60,
-      user_id: 'few79few-few7f-fwef-ffsnbjk',
-      barber_name: 'joe',
-      barber_phone: '52153415',
-      barber_email: 'joe@email.com',
-    },
-    {
-      id: `${Math.random()}`,
-      client_name: 'Pedro',
-      client_phone: '48568648987',
-      client_email: 'pedro@email.com',
-      hour: '14:00',
-      hour_end: '15:00',
-      schedule_date: '2024-03-21',
-      available: false,
-      status: 'pending',
-      service_id: 'few79few-few7f-fwef-ffsnbjk',
-      service_type: 'Cabelo e Barba',
-      duration: 60,
-      user_id: 'few79few-few7f-fwef-ffsnbjk',
-      barber_name: 'joe',
-      barber_phone: '52153415',
-      barber_email: 'joe@email.com',
-    },
-  ]);
+  const [schedules, setSchedules] = useState([]);
+  const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const navigate = useNavigate();
+
+  const loadConfirmedSchedules = useCallback(async () => {
+    try {
+      setIsLoadingSchedules(true);
+      const confirmedSchedulesList = await SchedulesService.listConfirmed();
+
+      setSchedules(confirmedSchedulesList);
+      setHasError(false);
+    } catch (error) {
+      console.log(error);
+
+      if (error?.response?.data?.tokenError) {
+        navigate('/login');
+      }
+
+      setSchedules([]);
+      setHasError(true);
+    } finally {
+      setIsLoadingSchedules(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    loadConfirmedSchedules();
+  }, [loadConfirmedSchedules]);
 
   const hasSchedules = schedules.length > 0;
+  const isListEmpty = !hasError && !isLoadingSchedules && !hasSchedules;
   return (
     <Container>
+      <Loader isLoading={isLoadingSchedules} />
       <SchedulesHeader />
 
       {hasSchedules && (
@@ -91,7 +55,14 @@ export default function ConfirmedSchedules() {
         />
       )}
 
-      {!hasSchedules && <p>Nenhum agendamento</p>}
+      {isListEmpty && <EmptyList text="Nenhum agendamento confirmado." />}
+
+      {hasError && (
+      <ErrorContainer
+        text="Erro ao carregar agendamentos confirmados"
+        onTryAgain={loadConfirmedSchedules}
+      />
+      )}
     </Container>
   );
 }

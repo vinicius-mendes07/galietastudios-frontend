@@ -26,15 +26,22 @@ class SchedulesService {
   }
 
   async listPending() {
-    // await delay(2000);
-    // const { data } = await api.get('/schedules/canceled');
-    // return data;
+    await delay(1000);
+
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.get('/schedules/pending', { headers: { Authorization: `Bearer ${token}` } });
+
+    return data;
   }
 
   async listConfirmed() {
-    // await delay(2000);
-    // const { data } = await api.get('/schedules/canceled');
-    // return data;
+    await delay(1000);
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.get('/schedules/confirmed', { headers: { Authorization: `Bearer ${token}` } });
+
+    return data;
   }
 
   async createSchedule({
@@ -59,8 +66,17 @@ class SchedulesService {
     return data;
   }
 
-  async confirmPending() {
-    //
+  async confirmPending(id) {
+    await delay(1000);
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.patch(
+      `/schedules/confirm/${id}`,
+      { status: 'confirmado' },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    return data;
   }
 
   async cancelDay({ schedule_date }) {
@@ -69,8 +85,17 @@ class SchedulesService {
     return data;
   }
 
-  async deleteSchedule() {
-    //
+  async deleteSchedule(id) {
+    await delay(1000);
+
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.delete(
+      `/schedules/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    return data;
   }
 }
 
