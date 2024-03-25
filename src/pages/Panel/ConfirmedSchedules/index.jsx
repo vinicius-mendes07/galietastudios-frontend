@@ -27,7 +27,7 @@ export default function ConfirmedSchedules() {
       console.log(error);
 
       if (error?.response?.data?.tokenError) {
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
 
       setSchedules([]);

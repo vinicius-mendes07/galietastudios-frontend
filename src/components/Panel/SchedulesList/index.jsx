@@ -53,7 +53,7 @@ export default function SchedulesList({
       });
     } catch (error) {
       if (error?.response?.data?.tokenError) {
-        navigate('/login');
+        navigate('/login', { replace: true });
         return;
       }
       toast({
@@ -87,7 +87,7 @@ export default function SchedulesList({
       });
     } catch (error) {
       if (error?.response?.data?.tokenError) {
-        navigate('/login');
+        navigate('/login', { replace: true });
         return;
       }
       toast({

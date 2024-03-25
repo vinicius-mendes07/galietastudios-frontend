@@ -26,7 +26,7 @@ export default function PendingSchedules() {
       console.log(error);
 
       if (error?.response?.data?.tokenError) {
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
 
       setSchedules([]);

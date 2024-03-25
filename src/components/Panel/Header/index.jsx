@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Container } from './styles';
 import logo from '../../../assets/images/logo.svg';
@@ -7,6 +7,8 @@ import logo from '../../../assets/images/logo.svg';
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState('');
+
+  const navigate = useNavigate();
 
   function handleToggleMenu() {
     setShowMenu((prevState) => (prevState === '' ? 'show-menu' : ''));
@@ -18,6 +20,9 @@ export default function Header() {
 
   function handleLogout() {
     setShowMenu('');
+
+    localStorage.removeItem('galieta-token');
+    navigate('/login', { replace: true });
   }
 
   return (
@@ -50,7 +55,7 @@ export default function Header() {
 
           <div className="user-info">
             <Link
-              to="/panel/users/123"
+              to="/panel/users/current"
               onClick={handleEditUser}
             >Meus dados
             </Link>

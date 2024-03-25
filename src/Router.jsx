@@ -72,7 +72,7 @@ export default function Router() {
           element: <NewService />,
         },
         {
-          path: 'users/:userId',
+          path: 'users/current',
           element: <EditUser />,
         },
       ],
