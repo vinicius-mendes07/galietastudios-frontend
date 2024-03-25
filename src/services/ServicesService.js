@@ -9,6 +9,20 @@ class ServicesService {
     return data;
   }
 
+  async createService({ service_type, duration }) {
+    await delay(1000);
+
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.post(
+      '/services',
+      { service_type, duration },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    return data;
+  }
+
   async deleteService(id) {
     await delay(1000);
 
