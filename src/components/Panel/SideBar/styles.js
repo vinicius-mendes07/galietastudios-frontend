@@ -6,6 +6,7 @@ export const Container = styled.aside`
   bottom: 0;
   left: 0;
   display: flex;
+  z-index: 2;
 
   .sidebar {
     background-color: ${({ theme }) => theme.colors.dark.light};

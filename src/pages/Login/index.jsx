@@ -1,14 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import FormGroup from '../../components/FormGroup';
 import { Input } from '../../components/Input';
 import useErrors from '../../hooks/useErrors';
+import UsersServices from '../../services/UsersServices';
 import isEmailValid from '../../utils/isEmailValid';
+import toast from '../../utils/toast';
 import { Container } from './styles';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     getErrorMessageByField, removeError, setError,
@@ -28,13 +34,30 @@ export default function Login() {
     setPassword(event.target.value);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    console.log({
-      email,
-      password,
-    });
+    try {
+      setIsSubmitting(true);
+      await UsersServices.login({ email, password });
+
+      navigate('/panel');
+    } catch (error) {
+      if (error?.response?.data?.error === 'Invalid email or password') {
+        toast({
+          type: 'danger',
+          text: 'E-mail ou senha inválidos!',
+        });
+        return;
+      }
+      console.log(error);
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao efetuar login!',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const isFormValid = password && isEmailValid(email);
@@ -49,6 +72,7 @@ export default function Login() {
             type="email"
             onChange={handleEmailChange}
             value={email}
+            disabled={isSubmitting}
           />
         </FormGroup>
         <FormGroup>
@@ -57,12 +81,14 @@ export default function Login() {
             type="password"
             onChange={handlePasswordChange}
             value={password}
+            disabled={isSubmitting}
           />
         </FormGroup>
 
         <Button
           type="submit"
           disabled={!isFormValid}
+          isLoading={isSubmitting}
         >
           Entrar
         </Button>
