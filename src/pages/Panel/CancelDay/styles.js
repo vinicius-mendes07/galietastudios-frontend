@@ -11,4 +11,8 @@ export const Container = styled.form`
   h1 {
     text-align: center;
   }
+
+  button {
+    margin-top: 8px;
+  }
 `;

@@ -2,6 +2,7 @@ import { useRoutes } from 'react-router-dom';
 import Layout from './components/Layout';
 import PanelLayout from './components/Panel/PanelLayout';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import CancelDay from './pages/Panel/CancelDay';
 import CanceledDays from './pages/Panel/CanceledDays';
 import ConfirmedSchedules from './pages/Panel/ConfirmedSchedules';
@@ -35,6 +36,10 @@ export default function Router() {
             },
 
           ],
+        },
+        {
+          path: 'login',
+          element: <Login />,
         },
       ],
     },

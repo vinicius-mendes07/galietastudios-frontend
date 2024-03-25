@@ -12,6 +12,6 @@ export const Container = styled.form`
   }
 
   button {
-    margin-top: 16px;
+    margin-top: 24px;
   }
 `;
