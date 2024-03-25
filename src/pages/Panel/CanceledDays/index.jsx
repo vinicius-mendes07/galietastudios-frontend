@@ -17,7 +17,7 @@ export default function CanceledDays() {
   ]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [canceledDayBeingDeleted, setCanceledDayBeingDeleted] = useState(null);
-  const [isLoadingModal, setIsLoadingModal] = useState(null);
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
 
   function handleCloseModal() {
     setIsModalVisible(false);

@@ -22,7 +22,7 @@ export default function SchedulesList({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [scheduleBeingDeleted, setScheduleBeingDeleted] = useState(null);
   const [scheduleBeingConfirmed, setScheduleBeingConfirmed] = useState(null);
-  const [isLoadingModal, setIsLoadingModal] = useState(null);
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
   const [isDanger, setIsDanger] = useState(false);
 
   const navigate = useNavigate();

@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/Modal';
 import PageHeader from '../../../components/Panel/PageHeader';
@@ -9,16 +10,45 @@ import delay from '../../../utils/delay';
 import toast from '../../../utils/toast';
 
 import trash from '../../../assets/images/icons/trash.svg';
+import EmptyList from '../../../components/EmptyList';
+import ErrorContainer from '../../../components/ErrorContainer';
+import ServicesService from '../../../services/ServicesService';
+import Loader from '../../../components/Loader';
 
 export default function Services() {
-  const [services, setServices] = useState([
-    { id: `${Math.random()}`, service_type: 'Barba', duration: 30 },
-    { id: `${Math.random()}`, service_type: 'Cabelo', duration: 30 },
-    { id: `${Math.random()}`, service_type: 'Cabelo e Barba', duration: 60 },
-  ]);
+  const [services, setServices] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [serviceBeingDeleted, setServiceBeingDeleted] = useState(null);
-  const [isLoadingModal, setIsLoadingModal] = useState(null);
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const navigate = useNavigate();
+
+  const loadServices = useCallback(async () => {
+    try {
+      setIsLoadingServices(true);
+      const servicesList = await ServicesService.listServices();
+
+      setServices(servicesList);
+      setHasError(false);
+    } catch (error) {
+      console.log(error);
+
+      if (error?.response?.data?.tokenError) {
+        navigate('/login', { replace: true });
+      }
+
+      setServices([]);
+      setHasError(true);
+    } finally {
+      setIsLoadingServices(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    loadServices();
+  }, [loadServices]);
 
   function handleCloseModal() {
     setIsModalVisible(false);
@@ -33,7 +63,7 @@ export default function Services() {
     try {
       setIsLoadingModal(true);
       await delay(1000);
-      // await ContactsService.deleteContact(contactBeingDeleted.id);
+      await ServicesService.deleteService(serviceBeingDeleted.id);
 
       setServices((prevState) => prevState.filter(
         (service) => service.id !== serviceBeingDeleted.id,
@@ -44,7 +74,11 @@ export default function Services() {
         type: 'success',
         text: 'Serviço excluído com sucesso!',
       });
-    } catch {
+    } catch (error) {
+      if (error?.response?.data?.tokenError) {
+        navigate('/login', { replace: true });
+        return;
+      }
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao excluir o serviço!',
@@ -55,8 +89,10 @@ export default function Services() {
   }
 
   const hasServices = services.length > 0;
+  const isListEmpty = !hasError && !isLoadingServices && !hasServices;
   return (
     <Container>
+      <Loader isLoading={isLoadingServices} />
       <PageHeader
         title="Serviços"
         buttonLabel="Novo Serviço"
@@ -97,6 +133,15 @@ export default function Services() {
             <p>Esta ação não poderá ser desfeita!</p>
           </Modal>
         </>
+        )}
+
+        {isListEmpty && <EmptyList text="Nenhum serviço encontrado." />}
+
+        {hasError && (
+        <ErrorContainer
+          text="Erro ao carregar os serviços"
+          onTryAgain={loadServices}
+        />
         )}
       </div>
     </Container>
