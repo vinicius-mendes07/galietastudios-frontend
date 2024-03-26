@@ -54,7 +54,7 @@ export default function Services() {
     setIsModalVisible(false);
   }
 
-  const handleOpenDeleteCanceledDayModal = useCallback((service) => {
+  const handleOpenDeleteServiceModal = useCallback((service) => {
     setServiceBeingDeleted(service);
     setIsModalVisible(true);
   }, []);
@@ -113,7 +113,7 @@ export default function Services() {
                 <button
                   type="button"
                   className="btn-delete"
-                  onClick={() => handleOpenDeleteCanceledDayModal(service)}
+                  onClick={() => handleOpenDeleteServiceModal(service)}
                 >
                   <img src={trash} alt="delete" />
                 </button>
@@ -138,10 +138,10 @@ export default function Services() {
         {isListEmpty && <EmptyList text="Nenhum serviço encontrado." />}
 
         {hasError && (
-        <ErrorContainer
-          text="Erro ao carregar os serviços"
-          onTryAgain={loadServices}
-        />
+          <ErrorContainer
+            text="Erro ao carregar os serviços"
+            onTryAgain={loadServices}
+          />
         )}
       </div>
     </Container>

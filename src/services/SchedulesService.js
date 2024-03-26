@@ -20,8 +20,9 @@ class SchedulesService {
   }
 
   async listCanceledDays() {
-    await delay(2000);
+    await delay(1000);
     const { data } = await api.get('/schedules/canceled');
+
     return data;
   }
 

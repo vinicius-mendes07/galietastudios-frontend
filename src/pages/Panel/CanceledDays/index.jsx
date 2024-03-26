@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../../components/Panel/PageHeader';
 import { Card, Container } from './styles';
 
@@ -7,17 +8,20 @@ import formatDate from '../../../utils/formatDate';
 import delay from '../../../utils/delay';
 import toast from '../../../utils/toast';
 import Modal from '../../../components/Modal';
+import SchedulesService from '../../../services/SchedulesService';
+import Loader from '../../../components/Loader';
+import EmptyList from '../../../components/EmptyList';
+import ErrorContainer from '../../../components/ErrorContainer';
 
 export default function CanceledDays() {
-  const [canceledDays, setCanceledDays] = useState([
-    { id: `${Math.random()}`, schedule_date: '2024-03-23' },
-    { id: `${Math.random()}`, schedule_date: '2024-03-27' },
-    { id: `${Math.random()}`, schedule_date: '2024-03-28' },
-    { id: `${Math.random()}`, schedule_date: '2024-04-02' },
-  ]);
+  const [canceledDays, setCanceledDays] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [canceledDayBeingDeleted, setCanceledDayBeingDeleted] = useState(null);
   const [isLoadingModal, setIsLoadingModal] = useState(false);
+  const [isLoadingCaceledDays, setIsLoadingCaceledDays] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const navigate = useNavigate();
 
   function handleCloseModal() {
     setIsModalVisible(false);
@@ -32,7 +36,7 @@ export default function CanceledDays() {
     try {
       setIsLoadingModal(true);
       await delay(1000);
-      // await ContactsService.deleteContact(contactBeingDeleted.id);
+      await SchedulesService.deleteSchedule(canceledDayBeingDeleted.id);
 
       setCanceledDays((prevState) => prevState.filter(
         (canceledDay) => canceledDay.id !== canceledDayBeingDeleted.id,
@@ -43,19 +47,51 @@ export default function CanceledDays() {
         type: 'success',
         text: 'Dia cancelado restaurado com sucesso!',
       });
-    } catch {
+    } catch (error) {
+      if (error?.response?.data?.tokenError) {
+        navigate('/login', { replace: true });
+        return;
+      }
+
       toast({
         type: 'danger',
-        text: 'Ocorreu um erro ao excluir o dia cancelado!',
+        text: 'Ocorreu um erro ao restaurar o dia cancelado!',
       });
     } finally {
       setIsLoadingModal(false);
     }
   }
 
+  const loadCanceledDays = useCallback(async () => {
+    try {
+      setIsLoadingCaceledDays(true);
+      const canceledDaysList = await SchedulesService.listCanceledDays();
+
+      setCanceledDays(canceledDaysList);
+      setHasError(false);
+    } catch (error) {
+      console.log(error);
+
+      if (error?.response?.data?.tokenError) {
+        navigate('/login', { replace: true });
+      }
+
+      setCanceledDays([]);
+      setHasError(true);
+    } finally {
+      setIsLoadingCaceledDays(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    loadCanceledDays();
+  }, [loadCanceledDays]);
+
   const hasCanceledDays = canceledDays.length > 0;
+  const isListEmpty = !hasError && !isLoadingCaceledDays && !hasCanceledDays;
   return (
     <Container>
+      <Loader isLoading={isLoadingCaceledDays} />
       <PageHeader
         title="Dias Cancelados"
         buttonLabel="Cancelar dia"
@@ -99,8 +135,16 @@ export default function CanceledDays() {
           </Modal>
         </>
         )}
-      </div>
 
+        {isListEmpty && <EmptyList text="Nenhum dia cancelado." />}
+
+        {hasError && (
+          <ErrorContainer
+            text="Erro ao carregar os dias cancelados"
+            onTryAgain={loadCanceledDays}
+          />
+        )}
+      </div>
     </Container>
   );
 }

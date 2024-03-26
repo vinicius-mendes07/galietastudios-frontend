@@ -34,6 +34,14 @@ export default function CancelDay() {
         return;
       }
 
+      if (error?.response?.data?.error === 'There is schedules in this date') {
+        toast({
+          type: 'danger',
+          text: 'Erro ao cancelar dia. Existem agendamentos marcados nessa data!',
+        });
+        return;
+      }
+
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao cancelar o dia de serviço!',
