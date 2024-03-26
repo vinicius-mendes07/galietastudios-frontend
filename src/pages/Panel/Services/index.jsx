@@ -79,6 +79,13 @@ export default function Services() {
         navigate('/login', { replace: true });
         return;
       }
+      if (error?.response?.data?.error === 'There are schedules in this service') {
+        toast({
+          type: 'danger',
+          text: 'Erro ao excluir serviço. Existem agendamentos marcados com ele!',
+        });
+        return;
+      }
       toast({
         type: 'danger',
         text: 'Ocorreu um erro ao excluir o serviço!',
