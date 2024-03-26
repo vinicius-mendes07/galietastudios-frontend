@@ -80,7 +80,14 @@ class SchedulesService {
   }
 
   async cancelDay({ schedule_date }) {
-    const { data } = await api.post('/schedules/cancel-day', { schedule_date });
+    await delay(1000);
+    const token = localStorage.getItem('galieta-token');
+
+    const { data } = await api.post(
+      '/schedules/cancel-day',
+      { schedule_date },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
 
     return data;
   }
