@@ -4,6 +4,8 @@ import fade from '../../../../assets/images/fade.png';
 import corteSocial from '../../../../assets/images/corte-social.jpg';
 import cabeloBarba from '../../../../assets/images/cabelo-barba.jpg';
 import defaultImage from '../../../../assets/images/default-image.avif';
+import somenteMaquina from '../../../../assets/images/somente-maquina.jpg';
+import corteTesoura from '../../../../assets/images/corte-tesoura.jpg';
 
 export const Container = styled.section`
   h1 {
@@ -55,10 +57,10 @@ export const Container = styled.section`
         background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${corteSocial});
       }
       .slide3 {
-        background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${defaultImage});
+        background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${somenteMaquina});
       }
       .slide4 {
-        background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${defaultImage});
+        background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${corteTesoura});
       }
       .slide5 {
         background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${cabeloBarba});

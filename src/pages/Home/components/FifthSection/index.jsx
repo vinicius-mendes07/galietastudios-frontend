@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LinkWrapper } from '../LinkWrapper/styles';
-import barberShop from '../../../../assets/images/barber-shop.avif';
+import barberShop from '../../../../assets/images/barber-shop.jpg';
 import { Container } from './styles';
 
 export default function FifthSection() {
