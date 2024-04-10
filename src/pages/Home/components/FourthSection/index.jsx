@@ -28,28 +28,29 @@ export default function FourthSection() {
 
   const handleTouchEnd = () => {
     if (dist > threshold) {
-      setSlideMarginMobile((prevState) => (prevState < 0 ? prevState + 360 : -1800));
+      setSlideMarginMobile((prevState) => (prevState < 0 ? prevState + 360 : -2160));
     } else if (dist < -threshold) {
-      setSlideMarginMobile((prevState) => (prevState >= -1560 ? prevState - 360 : 0));
+      setSlideMarginMobile((prevState) => (prevState >= -1920 ? prevState - 360 : 0));
     }
     setStartX(null);
   };
 
   function handleNextSlideDesktop() {
-    setSlideMarginDesktop((prevState) => (prevState >= -2510 ? prevState - 510 : 0));
+    setSlideMarginDesktop((prevState) => (prevState >= -3020 ? prevState - 510 : 0));
   }
   function handlePrevSlideDesktop() {
     setSlideMarginDesktop((prevState) => (prevState < 0 ? prevState + 510 : 0));
   }
 
   function handleNextSlideMobile() {
-    setSlideMarginMobile((prevState) => (prevState >= -1560 ? prevState - 360 : 0));
+    setSlideMarginMobile((prevState) => (prevState >= -1920 ? prevState - 360 : 0));
   }
   function handlePrevSlideMobile() {
-    setSlideMarginMobile((prevState) => (prevState < 0 ? prevState + 360 : -1800));
+    setSlideMarginMobile((prevState) => (prevState < 0 ? prevState + 360 : -2160));
   }
   return (
     <Container
+      id="services"
       $slideMargin={slideMarginDesktop}
       $slideMarginMobile={slideMarginMobile}
       className="carrossel"
@@ -77,15 +78,20 @@ export default function FourthSection() {
 
           <div className="slide slide4">
             <h3>Corte Tesoura</h3>
-            <h3>5 €</h3>
+            <h3>10 €</h3>
           </div>
 
           <div className="slide slide5">
             <h3>Cabelo e Barba</h3>
-            <h3>12 €</h3>
+            <h3>15 €</h3>
           </div>
 
           <div className="slide slide6">
+            <h3>Barba</h3>
+            <h3>5 €</h3>
+          </div>
+
+          <div className="slide slide7">
             <h3>Limpeza Fácil</h3>
             <h3>Em breve</h3>
           </div>

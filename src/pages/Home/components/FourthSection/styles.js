@@ -6,6 +6,7 @@ import cabeloBarba from '../../../../assets/images/cabelo-barba.jpg';
 import defaultImage from '../../../../assets/images/default-image.avif';
 import somenteMaquina from '../../../../assets/images/somente-maquina.jpg';
 import corteTesoura from '../../../../assets/images/corte-tesoura.jpg';
+import barba from '../../../../assets/images/barba6.jpg';
 
 export const Container = styled.section`
   h1 {
@@ -21,7 +22,7 @@ export const Container = styled.section`
     padding: 0 30px;
 
     .slides {
-      width: calc(480px * 6 + 30px * 5);
+      width: calc(480px * 7 + 30px * 5);
       display: flex;
       gap: 30px;
 
@@ -66,6 +67,9 @@ export const Container = styled.section`
         background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${cabeloBarba});
       }
       .slide6 {
+        background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${barba});
+      }
+      .slide7 {
         background-image: linear-gradient(339deg, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, .88)), url(${defaultImage});
       }
     }
@@ -126,7 +130,7 @@ export const Container = styled.section`
       margin: 0px 30px;
 
       .slides {
-        width: calc(330px * 6 + 30px * 5);
+        width: calc(330px * 7 + 30px * 5);
         gap: 30px;
 
         .slide {
