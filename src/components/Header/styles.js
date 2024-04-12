@@ -10,7 +10,7 @@ export const Container = styled.header`
   .logo {
     img {
       display: block;
-      max-width: 100px;
+      max-width: 70px;
     }
   }
 
@@ -65,8 +65,6 @@ export const Container = styled.header`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    position: sticky;
-    top: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -79,8 +77,7 @@ export const Container = styled.header`
     .logo-mobile {
       display: block;
       img {
-
-        width: 70px;
+        width: 50px;
       }
     }
 
@@ -140,7 +137,7 @@ export const Container = styled.header`
         margin-bottom: 13px;
       }
 
-      .line3 {
+      .line2 {
         margin-bottom: 10px;
       }
     }
@@ -160,7 +157,7 @@ export const Container = styled.header`
         transform: translate3d(0px, 8px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(135deg) skew(0deg, 0deg);
       }
 
-      .line3 {
+      .line2 {
         transform: translate3d(0px, -7px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(45deg) skew(0deg, 0deg);
       }
     }

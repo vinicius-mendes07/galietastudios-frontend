@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Container } from './styles';
-import logo from '../../assets/images/logo.svg';
-
-// arrumar o href
+import logo from '../../assets/images/logo.png';
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState('');
+  const { pathname } = useLocation();
+  const isHomePage = pathname === '/';
 
   function handleToggleMenu() {
     setShowMenu((prevState) => (prevState === '' ? 'show-menu' : ''));
@@ -15,6 +15,27 @@ export default function Header() {
   function closeMenu() {
     setShowMenu('');
   }
+
+  const handleClick = (event, sectionId) => {
+    if (!isHomePage) {
+      event.preventDefault();
+      window.location.href = `/#${sectionId}`;
+    }
+    closeMenu();
+  };
+
+  useEffect(() => {
+    if (isHomePage) {
+      const { hash } = window.location;
+      if (hash) {
+        const sectionId = hash.substring(1);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView();
+        }
+      }
+    }
+  }, [isHomePage]);
 
   return (
     <Container>
@@ -28,27 +49,27 @@ export default function Header() {
 
       <button type="button" className={`hamburguer ${showMenu}`} onClick={handleToggleMenu}>
         <div className="line line1" />
-        <div className="line line3" />
+        <div className="line line2" />
       </button>
       <nav>
         <ul>
           <div>
             <li>
-              <Link
-                to="/"
-                onClick={closeMenu}
+              <a
+                href={isHomePage ? '#visit-us' : '/#visit-us'}
+                onClick={(event) => handleClick(event, 'visit-us')}
               >
-                Galeria
-              </Link>
+                Visite-nos
+              </a>
             </li>
 
             <li>
-              <Link
-                to="/"
-                onClick={closeMenu}
+              <a
+                href={isHomePage ? '#about' : '/#about'}
+                onClick={(event) => handleClick(event, 'about')}
               >
-                Sobre nós
-              </Link>
+                Sobre Nós
+              </a>
             </li>
           </div>
 
@@ -63,12 +84,12 @@ export default function Header() {
 
           <div>
             <li>
-              <Link
-                to="/"
-                onClick={closeMenu}
+              <a
+                href={isHomePage ? '#services' : '/#services'}
+                onClick={(event) => handleClick(event, 'services')}
               >
-                Promoções
-              </Link>
+                Serviços
+              </a>
             </li>
 
             <li>
