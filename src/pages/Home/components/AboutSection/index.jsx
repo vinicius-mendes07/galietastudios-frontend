@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { LinkWrapper } from '../LinkWrapper/styles';
 import { Container } from './styles';
 
-export default function ThirdSection() {
+export default function AboutSection() {
   return (
-    <Container>
+    <Container id="about">
       <div className="text-wrapper">
         <div className="text">
           <h2>Jornada de Estilo e Elegância</h2>

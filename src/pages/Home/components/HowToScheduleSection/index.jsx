@@ -3,7 +3,7 @@ import { LinkWrapper } from '../LinkWrapper/styles';
 import barberShop from '../../../../assets/images/barber-shop.jpg';
 import { Container } from './styles';
 
-export default function FifthSection() {
+export default function HowToScheduleSection() {
   return (
     <Container>
       <h1>Para agendar é muito fácil.</h1>

@@ -4,7 +4,7 @@ import chevronLeft from '../../../../assets/images/icons/chevron-left.svg';
 import chevronRight from '../../../../assets/images/icons/chevron-right.svg';
 import { Container } from './styles';
 
-export default function FourthSection() {
+export default function ServicesSection() {
   const [slideMarginDesktop, setSlideMarginDesktop] = useState(0);
   const [slideMarginMobile, setSlideMarginMobile] = useState(0);
   const [startX, setStartX] = useState(null);

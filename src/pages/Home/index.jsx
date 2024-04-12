@@ -1,26 +1,23 @@
 import { Container } from './styles';
 
 import FirstSection from './components/FirstSection';
-import SecondSection from './components/SecondSection';
-import ThirdSection from './components/ThirdSection';
-import FourthSection from './components/FourthSection';
-import FifthSection from './components/FifthSection';
-import SixthSection from './components/SixthSection';
+import AboutSection from './components/AboutSection';
+import ServicesSection from './components/ServicesSection';
+import HowToScheduleSection from './components/HowToScheduleSection';
+import VisitUsSection from './components/VisitUsSection';
 
 export default function Home() {
   return (
     <Container>
       <FirstSection />
 
-      <SecondSection />
+      <AboutSection />
 
-      <ThirdSection />
+      <ServicesSection />
 
-      <FourthSection />
+      <HowToScheduleSection />
 
-      <FifthSection />
-
-      <SixthSection />
+      <VisitUsSection />
     </Container>
   );
 }

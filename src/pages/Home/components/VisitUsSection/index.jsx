@@ -1,8 +1,8 @@
 import { Container } from './styles';
 
-export default function SixthSection() {
+export default function VisitUsSection() {
   return (
-    <Container>
+    <Container id="visit-us">
       <h1>Visite-nos</h1>
       <p>Uma experiência única espera por você.</p>
 
