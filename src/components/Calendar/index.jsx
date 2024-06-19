@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, memo,
+  useCallback, useEffect, useState, memo, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
@@ -27,21 +27,29 @@ function Calendar({
   const [currentYear, setCurrentYear] = useState(date.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(date.getMonth());
 
+  const currentMonthSchedules = useMemo(() => allSchedules.filter((schedule) => {
+    const scheduleDate = DateTime.fromISO(`${schedule.schedule_date}T${schedule.hour}Z`, { zone: zoneFormat });
+
+    return currentYear === scheduleDate.get('year') && currentMonth + 1 === scheduleDate.get('month');
+  }), [allSchedules, currentYear, currentMonth]);
+
+  const months = useMemo(() => ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'], []);
+
   const renderCalendar = useCallback(() => {
-    const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const currentMonthDays = [];
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
     const lastDateOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const lastDayOfMonth = new Date(currentYear, currentMonth, lastDateOfMonth).getDay();
     const lastDateOfLastMonth = new Date(currentYear, currentMonth, 0).getDate();
 
     for (let i = firstDayOfMonth; i > 0; i -= 1) {
-      setDays((prevState) => [...prevState, {
+      currentMonthDays.push({
         id: Math.random(),
         className: 'inactive',
         year: currentYear,
         month: currentMonth,
         day: `${lastDateOfLastMonth - i + 1}`,
-      }]);
+      });
     }
 
     for (let i = 1; i <= lastDateOfMonth; i += 1) {
@@ -69,7 +77,7 @@ function Calendar({
         let hourAvaliable = false;
         const dateString = mountDate(currentYear, currentMonth, `${i}`);
 
-        const isDayCanceled = allSchedules.find(
+        const isDayCanceled = currentMonthSchedules.find(
           (schedule) => (schedule.schedule_date === dateString && !schedule.available),
         );
 
@@ -80,7 +88,7 @@ function Calendar({
         const dateSelected = DateTime.fromISO(`${dateString}T${hourString}`, { zone: zoneFormat });
 
         if (dateSelected.toMillis() > currentDateAndHour.toMillis()) {
-          const hasSchedule = allSchedules.find((schedule) => {
+          const hasSchedule = currentMonthSchedules.find((schedule) => {
             const scheduleStart = getDateInPortugalTimezone(
               schedule.schedule_date,
               schedule.hour,
@@ -124,27 +132,28 @@ function Calendar({
         });
       }
 
-      setDays((prevState) => [...prevState, {
+      currentMonthDays.push({
         id: Math.random(),
         className: `${isToday} ${inactive} ${greenDay} ${yellowDay}`,
         year: currentYear,
         month: currentMonth,
         day: `${i}`,
-      }]);
+      });
     }
 
     for (let i = lastDayOfMonth; i < 6; i += 1) {
-      setDays((prevState) => [...prevState, {
+      currentMonthDays.push({
         id: Math.random(),
         className: 'inactive',
         year: currentYear,
         month: currentMonth,
         day: `${i - lastDayOfMonth + 1}`,
-      }]);
+      });
     }
 
+    setDays(currentMonthDays);
     setCurrentDate(`${months[currentMonth]} ${currentYear}`);
-  }, [currentMonth, currentYear, date, onSelectedDate, allHours, allSchedules]);
+  }, [currentMonth, currentYear, date, onSelectedDate, allHours, currentMonthSchedules]);
 
   useEffect(() => {
     setDays([]);

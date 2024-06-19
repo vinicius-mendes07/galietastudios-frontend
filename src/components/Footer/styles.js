@@ -18,7 +18,7 @@ export const Container = styled.footer`
 
         a {
           img {
-            width: 132px;
+            width: 164px;
             margin-bottom: 32px;
           }
         }

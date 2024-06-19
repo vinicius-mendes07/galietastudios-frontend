@@ -1,8 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Container } from './styles';
-import logo from '../../assets/images/logo.svg';
+import logo from '../../assets/images/galieta.png';
 
 export default function Footer() {
+  const { pathname } = useLocation();
+  const isHomePage = pathname === '/';
+
+  const handleClick = (event, sectionId) => {
+    if (!isHomePage) {
+      event.preventDefault();
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
+  useEffect(() => {
+    if (isHomePage) {
+      const { hash } = window.location;
+      if (hash) {
+        const sectionId = hash.substring(1);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView();
+        }
+      }
+    }
+  }, [isHomePage]);
+
   return (
     <Container>
       <div className="footer-body">
@@ -13,25 +37,46 @@ export default function Footer() {
               <img src={logo} alt="logo" />
             </Link>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius
-              enim in eros elementum tristique. Duis cursus, mi quis
-              viverra ornare, eros dolor interdum nulla.
+              Não apenas cortamos cabelo, moldamos estilos.
+              Cada visita é uma oportunidade para aprimorar a sua aparência
+              e elevar a sua confiança. Agende hoje mesmo!
             </p>
           </div>
           <div className="info-wrapper">
             <p>Email</p>
             <span>support@spark.design</span>
             <p>Mailing</p>
-            <span>23876 Main Street
-              Lumptin, NQ 56789
-            </span>
+            <span>Largo da Fonte do Cabo, N1, Ericeira.</span>
           </div>
         </div>
         <ul>
-          <li><Link to="/">Get Started</Link></li>
-          <li><Link to="/">Changelog</Link></li>
-          <li><Link to="/">Template Support</Link></li>
-          <li><Link to="/">Licensing</Link></li>
+          <li>
+            <a
+              href={isHomePage ? '#visit-us' : '/#visit-us'}
+              onClick={(event) => handleClick(event, 'visit-us')}
+            >
+              Visite-nos
+            </a>
+          </li>
+
+          <li>
+            <a
+              href={isHomePage ? '#about' : '/#about'}
+              onClick={(event) => handleClick(event, 'about')}
+            >
+              Sobre Nós
+            </a>
+          </li>
+
+          <li>
+            <a
+              href={isHomePage ? '#services' : '/#services'}
+              onClick={(event) => handleClick(event, 'services')}
+            >
+              Serviços
+            </a>
+          </li>
+          <li><Link to="/schedule">Agendar</Link></li>
         </ul>
       </div>
 

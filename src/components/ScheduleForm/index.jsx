@@ -47,8 +47,6 @@ export default function ScheduleForm() {
   const [serviceId, setServiceId] = useState('');
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
-  // const [schedules, setSchedules] = useState([]);
-  // const [canceledDays, setCanceledDays] = useState([]);
   const [isLoadingSchedules, setIsLoadingSchedules] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,11 +54,13 @@ export default function ScheduleForm() {
 
   const navigate = useNavigate();
 
+  console.log(schedulesAndCanceledDays);
+
   const hours = useMemo(() => ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'], []);
 
   const hasSelectedDate = Object.keys(selectedDate).length !== 0;
 
-  const hoursAvailable = hours.filter((hourString) => {
+  const hoursAvailable = useMemo(() => hours.filter((hourString) => {
     const { currentDateAndHour } = getCurrentDateAndHour();
 
     let hourAvaliable = false;
@@ -100,10 +100,10 @@ export default function ScheduleForm() {
         hourAvaliable = false;
       }
     } else {
-      hourAvaliable = false;
+      return false;
     }
     return hourAvaliable !== false;
-  });
+  }), [hasSelectedDate, hours, schedulesAndCanceledDays, selectedDate]);
 
   const {
     errors,
@@ -122,34 +122,14 @@ export default function ScheduleForm() {
     && errors.length === 0
   );
 
-  // const loadSchedules = useCallback(async () => {
-  //   try {
-  //     setIsLoadingSchedules(true);
-  //     if (hasSelectedDate) {
-  //       const dateMounted = mountDate(selectedDate.year, selectedDate.month, selectedDate.day);
-  //       // const [schedulesList, canceledDaysList] = await Promise.all([
-  //       //   SchedulesService.listSchedules(dateMounted),
-  //       //   SchedulesService.listCanceledDays(),
-  //       // ]);
-  //       const schedulesList = await SchedulesService.listSchedules(dateMounted);
-  //       setSchedules(schedulesList);
-
-  //       setHasError(false);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     setHasError(true);
-  //     setSchedules([]);
-  //   } finally {
-  //     setIsLoadingSchedules(false);
-  //   }
-  // }, [hasSelectedDate, selectedDate]);
-
   const loadAllSchedules = useCallback(async () => {
     try {
       setIsLoadingSchedules(true);
-      const schedulesAndCanceledDaysList = await SchedulesService.listSchedulesAndCanceledDays();
+      const [servicesList, schedulesAndCanceledDaysList] = await Promise.all([
+        ServicesService.listServices(), SchedulesService.listSchedulesAndCanceledDays(),
+      ]);
 
+      setServices(servicesList);
       setSchedulesAndCanceledDays(schedulesAndCanceledDaysList);
       setHasError(false);
     } catch (error) {
@@ -158,30 +138,15 @@ export default function ScheduleForm() {
       setSchedulesAndCanceledDays([]);
     } finally {
       setIsLoadingSchedules(false);
-    }
-  }, []);
-
-  const loadServices = useCallback(async () => {
-    try {
-      const servicesList = await ServicesService.listServices();
-
-      setServices(servicesList);
-    } catch (error) {
-      console.log(error);
-    } finally {
       setIsLoadingServices(false);
     }
   }, []);
 
   useEffect(() => {
     loadAllSchedules();
-
-    // loadSchedules();
-    loadServices();
-  }, [loadAllSchedules, loadServices]);
+  }, [loadAllSchedules]);
 
   function handleTryAgain() {
-    loadServices();
     loadAllSchedules();
   }
 
@@ -361,7 +326,6 @@ export default function ScheduleForm() {
               disabled={isLoadingServices || isSubmitting}
             >
               <option value="" disabled>Serviço</option>
-              <option value="321">teste</option>
 
               {services.length > 0 && services.map((service) => (
                 <option key={service.id} value={service.id}>

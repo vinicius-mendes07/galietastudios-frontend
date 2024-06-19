@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.header`
-  padding: 20px;
+  padding: 10px 20px;
   position: sticky;
   top: 0;
   background-color: #fff;
